@@ -1,4 +1,4 @@
-package soma.haeya.edupi_user.login.client;
+package soma.haeya.edupi_user.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.client.config.MemberApiRestClientConfig;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;

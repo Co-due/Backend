@@ -1,4 +1,4 @@
-package soma.haeya.edupi_user.login.service;
+package soma.haeya.edupi_user.service;
 
 import static org.mockito.Mockito.when;
 
@@ -15,7 +15,6 @@ import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.service.MemberService;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
