@@ -1,7 +1,11 @@
 package soma.haeya.edupi_user.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,11 +14,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import soma.haeya.edupi_user.auth.TokenProvider;
 import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
+import soma.haeya.edupi_user.dto.request.SignupRequest;
+import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.exception.DbValidException;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -28,7 +38,11 @@ public class MemberServiceTest {
   @Mock
   private TokenProvider tokenProvider;
 
+  @Mock
+  private ObjectMapper objectMapper;
+
   private MemberLoginRequest memberLoginRequest;
+
 
   @BeforeEach
   void init() {
@@ -69,4 +83,56 @@ public class MemberServiceTest {
         .hasMessage("아이디 비밀번호가 일치하지 않습니다.");
   }
 
+  @Test
+  @DisplayName("회워가입에 성공하면 OK")
+  public void signUp_success() throws Exception {
+    // Given
+    SignupRequest signupRequest = SignupRequest.builder()
+        .email("valid-email@example.com")
+        .name("John Doe")
+        .password("validPassword123!")
+        .build();
+
+    Response mockResponse = new Response("회원가입 성공");
+    ResponseEntity<Response> responseEntity = ResponseEntity
+        .status(HttpStatus.OK)
+        .body(mockResponse);
+
+    when(memberRepository.saveMember(signupRequest)).thenReturn(responseEntity);
+
+    // When
+    ResponseEntity<Response> result = memberService.signUp(signupRequest);
+
+    // Then
+    Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("회원가입 요청 중 client 에러 발생")
+  public void signUp_clientError() throws JsonProcessingException {
+    // Given
+    SignupRequest signupRequest = SignupRequest.builder()
+        .email("invalid-email@example.com")
+        .name("John Doe")
+        .password("validPassword123")
+        .build();
+
+    // JSON 문자열과 해당 문자열을 파싱한 결과 객체
+    String errorResponse = "{\"message\":\"Invalid request\"}";
+    Response mockResponse = new Response("Invalid request");
+
+    // HttpClientErrorException을 모킹하여 예외의 응답 본문이 JSON 문자열로 반환되도록 설정
+    HttpClientErrorException exception = mock(HttpClientErrorException.class);
+    when(exception.getResponseBodyAsString()).thenReturn(errorResponse);
+    when(exception.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
+
+    // 예외를 던지도록 설정
+    when(memberRepository.saveMember(signupRequest)).thenThrow(exception);
+
+    // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
+    when(objectMapper.readValue(errorResponse, Response.class)).thenReturn(mockResponse);
+
+    // When & Then
+    DbValidException thrown = assertThrows(DbValidException.class, () -> memberService.signUp(signupRequest));
+  }
 }

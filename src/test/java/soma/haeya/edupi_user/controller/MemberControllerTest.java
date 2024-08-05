@@ -88,7 +88,7 @@ class MemberControllerTest {
   }
 
   @Test
-  @DisplayName("잘못된 요청으로 예외가 발생하면 BAD_REQUEST를 반환한다")
+  @DisplayName("회원가입 중 잘못된 요청으로 예외가 발생하면 BAD_REQUEST를 반환한다")
   void signUp_whenInvalidRequest_thenBadRequest() throws Exception {
     // Given
     SignupRequest signupRequest = SignupRequest.builder()

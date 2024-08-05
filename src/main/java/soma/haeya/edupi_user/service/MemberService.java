@@ -43,9 +43,10 @@ public class MemberService {
       } else if (e.getStatusCode().is5xxServerError()) {
         // TODO: 클라이언트에게 보낼 에러 핸들링 로직 추가
         throw new DbValidException(response.message());
+      } else {
+        throw new UnexpectedServerException("회원가입 요청 중 Unexpected error 발생 : " + e.getMessage());
       }
     }
-    throw new UnexpectedServerException("회원가입 요청 중 Unexpected error 발생");
   }
 
   public TokenInfo findMemberInfo(String token) {
