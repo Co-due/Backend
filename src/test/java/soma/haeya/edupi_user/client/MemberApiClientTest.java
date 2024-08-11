@@ -1,6 +1,5 @@
 package soma.haeya.edupi_user.client;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +7,7 @@ import java.io.IOException;
 import java.util.Objects;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,71 +28,71 @@ import soma.haeya.edupi_user.dto.response.Response;
 @Import(MemberApiRestClientConfig.class)
 class MemberApiClientTest {
 
-  @Autowired
-  private ObjectMapper mapper;
+    @Autowired
+    private ObjectMapper mapper;
 
-  private MockWebServer mockWebServer;
-  private MemberApiClient memberApiClient;
+    private MockWebServer mockWebServer;
+    private MemberApiClient memberApiClient;
 
-  @BeforeEach
-  void setUp() throws IOException {
-    mockWebServer = new MockWebServer();
-    mockWebServer.start(8081);
+    @BeforeEach
+    void setUp() throws IOException {
+        mockWebServer = new MockWebServer();
+        mockWebServer.start(8081);
 
-    // memberApiClient에 mockWebServer를 적용해 테스트
-    MemberApiRestClientConfig config = new MemberApiRestClientConfig();
-    memberApiClient = config.memberApiClient(
-        mockWebServer.url("/").toString());
-  }
-
-  @AfterEach
-  void shutdown() throws IOException {
-    if (mockWebServer != null) {
-      this.mockWebServer.shutdown();
+        // memberApiClient에 mockWebServer를 적용해 테스트
+        MemberApiRestClientConfig config = new MemberApiRestClientConfig();
+        memberApiClient = config.memberApiClient(
+            mockWebServer.url("/").toString());
     }
-  }
 
-  @Test
-  @DisplayName("이메일과 비밀번호로 회원을 찾는 Http 요청 테스트")
-  void testFindMemberByEmailAndPassword() throws JsonProcessingException {
-    Member expectedResponse = new Member(1L, "asdf@naver.com", "", "홍길동", Role.ROLE_USER);
+    @AfterEach
+    void shutdown() throws IOException {
+        if (mockWebServer != null) {
+            this.mockWebServer.shutdown();
+        }
+    }
 
-    // mockWebServer 응답 설정
-    mockWebServer.enqueue(new MockResponse()
-        .setBody(mapper.writeValueAsString(expectedResponse))
-        .addHeader("Content-Type", "application/json"));
+    @Test
+    @DisplayName("이메일과 비밀번호로 회원을 찾는 Http 요청 테스트")
+    void testFindMemberByEmailAndPassword() throws JsonProcessingException {
+        Member expectedResponse = new Member(1L, "asdf@naver.com", "", "홍길동", Role.ROLE_USER);
 
-    MemberLoginRequest request = MemberLoginRequest.builder()
-        .email("asdf@naver.com")
-        .password("password").build();
+        // mockWebServer 응답 설정
+        mockWebServer.enqueue(new MockResponse()
+            .setBody(mapper.writeValueAsString(expectedResponse))
+            .addHeader("Content-Type", "application/json"));
 
-    Member result = memberApiClient.findMemberByEmailAndPassword(request);
+        MemberLoginRequest request = MemberLoginRequest.builder()
+            .email("asdf@naver.com")
+            .password("password").build();
 
-    assertEquals(result.getEmail(), expectedResponse.getEmail());
-    assertEquals(result.getName(), expectedResponse.getName());
-  }
+        Member result = memberApiClient.findMemberByEmailAndPassword(request);
 
-  @Test
-  @DisplayName("회원 정보를 저장하는 요청")
-  void saveMember() throws JsonProcessingException {
-    Response mockResponse = new Response("회원가입 성공");
+        Assertions.assertThat(result.getEmail()).isEqualTo(expectedResponse.getEmail());
+        Assertions.assertThat(result.getName()).isEqualTo(expectedResponse.getName());
+    }
 
-    // mockWebServer 응답 설정
-    mockWebServer.enqueue(new MockResponse()
-        .setResponseCode(200)
-        .setBody(mapper.writeValueAsString(mockResponse))
-        .addHeader("Content-Type", "application/json"));
+    @Test
+    @DisplayName("회원 정보를 저장하는 요청")
+    void saveMember() throws JsonProcessingException {
+        Response mockResponse = new Response("회원가입 성공");
 
-    SignupRequest signupRequest = SignupRequest.builder()
-        .email("valid-email@naver.com")
-        .name("Any")
-        .password("qpwoeiruty00@")
-        .build();
+        // mockWebServer 응답 설정
+        mockWebServer.enqueue(new MockResponse()
+            .setResponseCode(200)
+            .setBody(mapper.writeValueAsString(mockResponse))
+            .addHeader("Content-Type", "application/json"));
 
-    ResponseEntity<Response> result = memberApiClient.saveMember(signupRequest);
+        SignupRequest signupRequest = SignupRequest.builder()
+            .email("valid-email@naver.com")
+            .name("Any")
+            .password("qpwoeiruty00@")
+            .build();
 
-    // Then
-    assertEquals(HttpStatus.OK, result.getStatusCode());
-    assertEquals("회원가입 성공", Objects.requireNonNull(result.getBody()).message());
-  }
+        ResponseEntity<Response> result = memberApiClient.saveMember(signupRequest);
+
+        // Then
+        Assertions.assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(Objects.requireNonNull(result.getBody()).message()).isEqualTo("회원가입 성공");
+    }
 }
