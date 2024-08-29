@@ -1,6 +1,11 @@
 package soma.haeya.edupi_user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,11 +26,13 @@ import soma.haeya.edupi_user.service.MemberService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
+@Tag(name = "Member", description = "Member API")
 public class MemberController {
 
     private final MemberService memberService;
 
     @PostMapping("/login")
+    @Operation(summary = "로그인", description = "사용자 측에서 로그인 할 때 사용하는 API")
     public ResponseEntity<Void> login(@Valid @RequestBody MemberLoginRequest memberLoginRequest,
         HttpServletResponse response) {
         String token = memberService.login(memberLoginRequest);
@@ -40,6 +47,7 @@ public class MemberController {
     }
 
     @GetMapping("/login/info")
+    @Operation(summary = "로그인", description = "사용자 측에서 회원가입 할 때 사용하는 API")
     public ResponseEntity<TokenInfo> loginInfo(@CookieValue("token") String token) {
         TokenInfo tokenInfo = memberService.findMemberInfo(token);
 
@@ -47,6 +55,11 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "회원가입", description = "사용자 측에서 회원가입 할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "회원가입에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", description = "회원가입에 실패했습니다.", content = @Content(mediaType = "application/json"))
+    })
     public ResponseEntity<Response> createPost(@Valid @RequestBody SignupRequest signupRequest)
         throws JsonProcessingException {
         return memberService.signUp(signupRequest);
