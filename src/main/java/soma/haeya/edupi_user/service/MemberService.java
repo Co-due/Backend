@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -34,17 +35,21 @@ public class MemberService {
 
     public ResponseEntity<Response> signUp(SignupRequest signupRequest) throws JsonProcessingException {
         try {
-            return memberApiClient.saveMember(signupRequest);
+
+            // 회원가입 요청을 처리합니다.
+            ResponseEntity<Response> responseEntity = memberApiClient.saveMember(signupRequest);
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseEntity.getBody());
+
         } catch (HttpClientErrorException e) {
             Response response = objectMapper.readValue(e.getResponseBodyAsString(), Response.class);
 
-            if (e.getStatusCode().is4xxClientError()) {
-                throw new DbValidException(response.message());
-            } else if (e.getStatusCode().is5xxServerError()) {
-                // TODO: 클라이언트에게 보낼 에러 핸들링 로직 추가
+            if (e.getStatusCode().is4xxClientError() || e.getStatusCode().is5xxServerError()) {
                 throw new DbValidException(response.message());
             } else {
-                throw new UnexpectedServerException("회원가입 요청 중 Unexpected error 발생 : " + e.getMessage());
+                throw new UnexpectedServerException("회원가입 중 예상치 못한 에러 발생 : " + e.getMessage());
             }
         }
     }
