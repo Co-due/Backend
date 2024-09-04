@@ -11,12 +11,12 @@ import soma.haeya.edupi_user.dto.request.SignupRequest;
 import soma.haeya.edupi_user.dto.response.Response;
 
 @Component
-@HttpExchange("/api/v1/member")
+@HttpExchange("/v1/member")
 public interface MemberApiClient {
 
-  @PostExchange("/login")
-  Member findMemberByEmailAndPassword(@RequestBody MemberLoginRequest memberLoginRequest);
+    @PostExchange("/findByEmailAndPassword")
+    Member findMemberByEmailAndPassword(@RequestBody MemberLoginRequest memberLoginRequest);
 
-  @PostExchange("/signup")
-  ResponseEntity<Response> saveMember(@RequestBody SignupRequest signupRequest);
+    @PostExchange("/signup")
+    ResponseEntity<Response> saveMember(@RequestBody SignupRequest signupRequest);
 }
