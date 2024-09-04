@@ -14,17 +14,10 @@ import soma.haeya.edupi_user.dto.response.SignUpResponse;
 @HttpExchange("/v1/member")
 public interface MemberApiClient {
 
-<<<<<<< HEAD
     @PostExchange("/findByEmailAndPassword")
     Member findMemberByEmailAndPassword(@RequestBody MemberLoginRequest memberLoginRequest);
 
     @PostExchange("/signup")
-    ResponseEntity<Response> saveMember(@RequestBody SignupRequest signupRequest);
-=======
-    @PostExchange("/login")
-    Member findMemberByEmailAndPassword(@RequestBody MemberLoginRequest memberLoginRequest);
-
-    @PostExchange("/signup")
     ResponseEntity<SignUpResponse> saveMember(@RequestBody SignUpRequest signupRequest);
->>>>>>> 1e758fc ([#26]feat: 자동 들여쓰기 변경)
+
 }
