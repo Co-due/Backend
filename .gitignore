@@ -41,5 +41,5 @@ out/
 **/.DS_Store
 **/._.DS_Store
 
-*.yml
+src/main/resources/*.yml
 application.properties
