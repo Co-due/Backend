@@ -1,5 +1,15 @@
 package soma.haeya.edupi_user.dto.response;
 
-public record ErrorResponse(String message, int errorCode) {
+import lombok.Getter;
 
+@Getter
+public class ErrorResponse {
+
+    String message;
+    int errorCode;
+
+    public ErrorResponse(String message, int errorCode) {
+        this.message = message;
+        this.errorCode = errorCode;
+    }
 }
