@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import soma.haeya.edupi_user.dto.response.ErrorResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
 import soma.haeya.edupi_user.exception.ErrorCode;
-import soma.haeya.edupi_user.exception.UnexpectedServerException;
+import soma.haeya.edupi_user.exception.InnerServerException;
 
 @Slf4j
 @ControllerAdvice
@@ -43,12 +43,12 @@ public class GlobalExceptionHandler {
             .body(errors);
     }
 
-    @ExceptionHandler(UnexpectedServerException.class)    // 예상치 못한 예외에 대한 처리
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(UnexpectedServerException ex) {
-        ErrorResponse error = new ErrorResponse(ex.getMessage(), ErrorCode.Alert);
+    @ExceptionHandler(InnerServerException.class)    // 내부 서버 에러에 대한 예외 처리
+    public ResponseEntity<ErrorResponse> handleValidationExceptions() {
+        ErrorResponse error = new ErrorResponse("잘못된 요청입니다. 다시 시도 해주세요.", ErrorCode.Alert);
 
         return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .status(HttpStatus.BAD_REQUEST)
             .body(error);
     }
 }
