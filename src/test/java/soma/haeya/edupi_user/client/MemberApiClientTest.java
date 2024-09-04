@@ -21,7 +21,7 @@ import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignUpRequest;
-import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.dto.response.ErrorResponse;
 import soma.haeya.edupi_user.dto.response.SignUpResponse;
 
 @SpringBootTest
@@ -75,7 +75,7 @@ class MemberApiClientTest {
     @Test
     @DisplayName("회원 가입 요청")
     void saveMember() throws JsonProcessingException {
-        Response mockResponse = new Response("회원가입 성공");
+        ErrorResponse mockResponse = new ErrorResponse("회원가입 성공");
 
         // mockWebServer 응답 설정
         mockWebServer.enqueue(new MockResponse()

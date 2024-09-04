@@ -23,7 +23,8 @@ import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignUpRequest;
-import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.dto.response.ErrorResponse;
+import soma.haeya.edupi_user.dto.response.SignUpResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
 
 @ExtendWith(MockitoExtension.class)
@@ -118,7 +119,7 @@ public class MemberServiceTest {
 
         // JSON 문자열과 해당 문자열을 파싱한 결과 객체
         String errorResponse = "{\"message\":\"Invalid request\"}";
-        Response mockResponse = new Response("Invalid request");
+        ErrorResponse mockResponse = new ErrorResponse("Invalid request");
 
         // HttpClientErrorException을 모킹하여 예외의 응답 본문이 JSON 문자열로 반환되도록 설정
         HttpClientErrorException exception = mock(HttpClientErrorException.class);
@@ -129,7 +130,7 @@ public class MemberServiceTest {
         when(memberRepository.saveMember(signupRequest)).thenThrow(exception);
 
         // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
-        when(objectMapper.readValue(errorResponse, Response.class)).thenReturn(mockResponse);
+        when(objectMapper.readValue(errorResponse, ErrorResponse.class)).thenReturn(mockResponse);
 
         // When & Then
         DbValidException thrown = assertThrows(DbValidException.class, () -> memberService.signUp(signupRequest));

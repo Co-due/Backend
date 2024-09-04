@@ -14,7 +14,7 @@ import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.dto.TokenInfo;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignUpRequest;
-import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.dto.response.ErrorResponse;
 import soma.haeya.edupi_user.dto.response.SignUpResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
 import soma.haeya.edupi_user.exception.InnerServerException;
@@ -52,20 +52,19 @@ public class MemberService {
 
     private void handleHttpClientException(HttpClientErrorException e) throws JsonProcessingException {
         // 예외의 응답 바디를 읽어 Response 객체로 변환
-        Response response = objectMapper.readValue(e.getResponseBodyAsString(), Response.class);
+        ErrorResponse response = objectMapper.readValue(e.getResponseBodyAsString(), ErrorResponse.class);
 
         if (e.getStatusCode().is4xxClientError()) {
-            throw new DbValidException(response.message());
+            throw new DbValidException(response.getMessage());
         } else if (e.getStatusCode().is5xxServerError()) {
-            throw new InnerServerException(response.message());
+            throw new InnerServerException(response.getMessage());
         } else {
-            throw new InnerServerException("회원가입 중 예상치 못한 에러 발생 : " + e.getMessage());
+            throw new InnerServerException(e.getMessage());
         }
     }
 
     public TokenInfo findMemberInfo(String token) {
         return tokenProvider.findUserInfoBy(token);
     }
-
 
 }
