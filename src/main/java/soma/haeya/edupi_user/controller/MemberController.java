@@ -32,7 +32,10 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/login")
-    @Operation(summary = "로그인", description = "사용자 측에서 로그인 할 때 사용하는 API")
+    @Operation(summary = "로그인", description = "아이디 패스워드를 받아서 토큰을 발급하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "토큰 발급에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+    })
     public ResponseEntity<Void> login(@Valid @RequestBody MemberLoginRequest memberLoginRequest,
         HttpServletResponse response) {
         String token = memberService.login(memberLoginRequest);
@@ -47,7 +50,8 @@ public class MemberController {
     }
 
     @GetMapping("/login/info")
-    @Operation(summary = "로그인", description = "사용자 측에서 회원가입 할 때 사용하는 API")
+    @Operation(summary = "로그인", description = "발급받은 토큰의 정보를 조회하는 API ")
+    @ApiResponse(responseCode = "200", description = "로그인에 성공하였습니다.", content = @Content(mediaType = "application/json"))
     public ResponseEntity<TokenInfo> loginInfo(@CookieValue("token") String token) {
         TokenInfo tokenInfo = memberService.findMemberInfo(token);
 
@@ -66,6 +70,10 @@ public class MemberController {
     }
 
     @GetMapping("/logout")
+    @Operation(summary = "로그아웃", description = "사용자 측에서 로그아웃 할 때 사용하는 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+    })
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("token", null);
         cookie.setPath("/");
