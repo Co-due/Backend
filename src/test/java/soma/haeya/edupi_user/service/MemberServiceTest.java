@@ -93,10 +93,9 @@ public class MemberServiceTest {
             .password("validPassword123!")
             .build();
 
-        Response mockResponse = new Response("회원가입 성공");
-        ResponseEntity<Response> responseEntity = ResponseEntity
+        ResponseEntity<SignUpResponse> responseEntity = ResponseEntity
             .status(HttpStatus.OK)
-            .body(mockResponse);
+            .body(new SignUpResponse(1L, "회원가입 성공"));
 
         when(memberRepository.saveMember(signupRequest)).thenReturn(responseEntity);
 

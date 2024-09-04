@@ -17,8 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignupRequest;
-import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.dto.request.SignUpRequest;
+import soma.haeya.edupi_user.dto.response.SignUpResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
 import soma.haeya.edupi_user.service.MemberService;
 
@@ -57,7 +57,7 @@ class MemberControllerTest {
     @DisplayName("회원가입에 성공하면 OK를 반환한다.")
     void signUp() throws Exception {
         // given
-        SignupRequest signupRequest = SignupRequest.builder()
+        SignUpRequest signupRequest = SignUpRequest.builder()
             .email("aabbcc@naver.com")
             .name("김미미")
             .password("qpwoeiruty00@")
@@ -67,7 +67,7 @@ class MemberControllerTest {
         when(memberService.signUp(signupRequest)).thenReturn(
             ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new Response("회원가입 성공"))
+                .body(new SignUpResponse(1L, "회원가입 성공"))
         );
 
         // When & Then
@@ -83,7 +83,7 @@ class MemberControllerTest {
     @DisplayName("회원가입 중 잘못된 요청으로 예외가 발생하면 BAD_REQUEST를 반환한다")
     void signUp_whenInvalidRequest_thenBadRequest() throws Exception {
         // Given
-        SignupRequest signupRequest = SignupRequest.builder()
+        SignUpRequest signupRequest = SignUpRequest.builder()
             .email("invalid-email")  // 유효하지 않은 이메일
             .name("김미미")
             .password("qpwoeiruty00@")

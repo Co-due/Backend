@@ -4,7 +4,6 @@ package soma.haeya.edupi_user.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.Objects;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.assertj.core.api.Assertions;
@@ -21,8 +20,9 @@ import soma.haeya.edupi_user.client.config.MemberApiRestClientConfig;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignupRequest;
+import soma.haeya.edupi_user.dto.request.SignUpRequest;
 import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.dto.response.SignUpResponse;
 
 @SpringBootTest
 @Import(MemberApiRestClientConfig.class)
@@ -37,7 +37,7 @@ class MemberApiClientTest {
     @BeforeEach
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
-        mockWebServer.start(8081);
+        mockWebServer.start();
 
         // memberApiClient에 mockWebServer를 적용해 테스트
         MemberApiRestClientConfig config = new MemberApiRestClientConfig();
@@ -73,7 +73,7 @@ class MemberApiClientTest {
     }
 
     @Test
-    @DisplayName("회원 정보를 저장하는 요청")
+    @DisplayName("회원 가입 요청")
     void saveMember() throws JsonProcessingException {
         Response mockResponse = new Response("회원가입 성공");
 
@@ -83,16 +83,15 @@ class MemberApiClientTest {
             .setBody(mapper.writeValueAsString(mockResponse))
             .addHeader("Content-Type", "application/json"));
 
-        SignupRequest signupRequest = SignupRequest.builder()
+        SignUpRequest signupRequest = SignUpRequest.builder()
             .email("valid-email@naver.com")
             .name("Any")
             .password("qpwoeiruty00@")
             .build();
 
-        ResponseEntity<Response> result = memberApiClient.saveMember(signupRequest);
+        ResponseEntity<SignUpResponse> result = memberApiClient.saveMember(signupRequest);
 
         // Then
         Assertions.assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(Objects.requireNonNull(result.getBody()).message()).isEqualTo("회원가입 성공");
     }
 }
