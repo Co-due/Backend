@@ -13,10 +13,11 @@ import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.dto.TokenInfo;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignupRequest;
+import soma.haeya.edupi_user.dto.request.SignUpRequest;
 import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.dto.response.SignUpResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
-import soma.haeya.edupi_user.exception.UnexpectedServerException;
+import soma.haeya.edupi_user.exception.InnerServerException;
 
 @Service
 @Slf4j
@@ -33,24 +34,32 @@ public class MemberService {
         return tokenProvider.generateToken(findMember);
     }
 
-    public ResponseEntity<Response> signUp(SignupRequest signupRequest) throws JsonProcessingException {
+    public ResponseEntity<SignUpResponse> signUp(SignUpRequest signupRequest) throws JsonProcessingException {
         try {
-
-            // 회원가입 요청을 처리합니다.
-            ResponseEntity<Response> responseEntity = memberApiClient.saveMember(signupRequest);
+            // 회원가입 요청을 처리
+            ResponseEntity<SignUpResponse> responseEntity = memberApiClient.saveMember(signupRequest);
 
             return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(responseEntity.getBody());
 
         } catch (HttpClientErrorException e) {
-            Response response = objectMapper.readValue(e.getResponseBodyAsString(), Response.class);
+            handleHttpClientException(e);
+        }
+        // 헝성 예외를 던지기 때문에 이 부분은 도달하지 않음
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
-            if (e.getStatusCode().is4xxClientError() || e.getStatusCode().is5xxServerError()) {
-                throw new DbValidException(response.message());
-            } else {
-                throw new UnexpectedServerException("회원가입 중 예상치 못한 에러 발생 : " + e.getMessage());
-            }
+    private void handleHttpClientException(HttpClientErrorException e) throws JsonProcessingException {
+        // 예외의 응답 바디를 읽어 Response 객체로 변환
+        Response response = objectMapper.readValue(e.getResponseBodyAsString(), Response.class);
+
+        if (e.getStatusCode().is4xxClientError()) {
+            throw new DbValidException(response.message());
+        } else if (e.getStatusCode().is5xxServerError()) {
+            throw new InnerServerException(response.message());
+        } else {
+            throw new InnerServerException("회원가입 중 예상치 못한 에러 발생 : " + e.getMessage());
         }
     }
 
