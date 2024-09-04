@@ -4,13 +4,17 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @ToString
 @Builder
-@AllArgsConstructor (access = AccessLevel.PROTECTED)
-public class SignupRequest {
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class SignUpRequest {
 
     @NotBlank(message = "이메일은 공백이 아니어야 합니다.")
     @Email(message = "잘못된 이메일 형식입니다.")
@@ -25,7 +29,7 @@ public class SignupRequest {
     private String name;
 
     @Pattern(regexp = "^010-\\d{3,4}-\\d{4}$",
-            message = "잘못된 형식입니다.")
+        message = "잘못된 형식입니다.")
     private String phoneNumber;
 }
 

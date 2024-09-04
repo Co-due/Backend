@@ -22,117 +22,117 @@ import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignupRequest;
+import soma.haeya.edupi_user.dto.request.SignUpRequest;
 import soma.haeya.edupi_user.dto.response.Response;
 import soma.haeya.edupi_user.exception.DbValidException;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
 
-  @InjectMocks
-  private MemberService memberService;
+    @InjectMocks
+    private MemberService memberService;
 
-  @Mock
-  private MemberApiClient memberRepository;
+    @Mock
+    private MemberApiClient memberRepository;
 
-  @Mock
-  private TokenProvider tokenProvider;
+    @Mock
+    private TokenProvider tokenProvider;
 
-  @Mock
-  private ObjectMapper objectMapper;
+    @Mock
+    private ObjectMapper objectMapper;
 
-  private MemberLoginRequest memberLoginRequest;
-
-
-  @BeforeEach
-  void init() {
-    memberLoginRequest = MemberLoginRequest.builder()
-        .email("asdf@naver.com")
-        .password("asdf1234")
-        .build();
-  }
+    private MemberLoginRequest memberLoginRequest;
 
 
-  @Test
-  @DisplayName("아이디와 패스워드에 맞는 멤버가 있으면 token을 반환한다.")
-  void memberLogin() {
+    @BeforeEach
+    void init() {
+        memberLoginRequest = MemberLoginRequest.builder()
+            .email("asdf@naver.com")
+            .password("asdf1234")
+            .build();
+    }
 
-    Member expectedMember = new Member("asdf@naver.com", "홍길동", Role.ROLE_USER);
 
-    String expectedToken = "token";
+    @Test
+    @DisplayName("아이디와 패스워드에 맞는 멤버가 있으면 token을 반환한다.")
+    void memberLogin() {
 
-    when(memberRepository.findMemberByEmailAndPassword(memberLoginRequest)).thenReturn(
-        expectedMember);
-    when(tokenProvider.generateToken(expectedMember)).thenReturn(expectedToken);
+        Member expectedMember = new Member("asdf@naver.com", "홍길동", Role.ROLE_USER);
 
-    String resultToken = memberService.login(memberLoginRequest);
+        String expectedToken = "token";
 
-    Assertions.assertThat(resultToken).isEqualTo(expectedToken);
-  }
+        when(memberRepository.findMemberByEmailAndPassword(memberLoginRequest)).thenReturn(
+            expectedMember);
+        when(tokenProvider.generateToken(expectedMember)).thenReturn(expectedToken);
 
-  @Test
-  @DisplayName("아이디 패스워드에 맞는 멤버가 없으면 예외를 반환한다.")
-  void memberLoginException() {
+        String resultToken = memberService.login(memberLoginRequest);
 
-    when(memberRepository.findMemberByEmailAndPassword(memberLoginRequest)).thenThrow(
-        new IllegalArgumentException("아이디 비밀번호가 일치하지 않습니다.")
-    );
+        Assertions.assertThat(resultToken).isEqualTo(expectedToken);
+    }
 
-    Assertions.assertThatThrownBy(() -> memberService.login(memberLoginRequest))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("아이디 비밀번호가 일치하지 않습니다.");
-  }
+    @Test
+    @DisplayName("아이디 패스워드에 맞는 멤버가 없으면 예외를 반환한다.")
+    void memberLoginException() {
 
-  @Test
-  @DisplayName("회워가입에 성공하면 OK")
-  public void signUp_success() throws Exception {
-    // Given
-    SignupRequest signupRequest = SignupRequest.builder()
-        .email("valid-email@example.com")
-        .name("John Doe")
-        .password("validPassword123!")
-        .build();
+        when(memberRepository.findMemberByEmailAndPassword(memberLoginRequest)).thenThrow(
+            new IllegalArgumentException("아이디 비밀번호가 일치하지 않습니다.")
+        );
 
-    Response mockResponse = new Response("회원가입 성공");
-    ResponseEntity<Response> responseEntity = ResponseEntity
-        .status(HttpStatus.OK)
-        .body(mockResponse);
+        Assertions.assertThatThrownBy(() -> memberService.login(memberLoginRequest))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("아이디 비밀번호가 일치하지 않습니다.");
+    }
 
-    when(memberRepository.saveMember(signupRequest)).thenReturn(responseEntity);
+    @Test
+    @DisplayName("회워가입에 성공하면 OK")
+    public void signUp_success() throws Exception {
+        // Given
+        SignUpRequest signupRequest = SignUpRequest.builder()
+            .email("valid-email@example.com")
+            .name("John Doe")
+            .password("validPassword123!")
+            .build();
 
-    // When
-    ResponseEntity<Response> result = memberService.signUp(signupRequest);
+        Response mockResponse = new Response("회원가입 성공");
+        ResponseEntity<Response> responseEntity = ResponseEntity
+            .status(HttpStatus.OK)
+            .body(mockResponse);
 
-    // Then
-    Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
-  }
+        when(memberRepository.saveMember(signupRequest)).thenReturn(responseEntity);
 
-  @Test
-  @DisplayName("회원가입 요청 중 client 에러 발생")
-  public void signUp_clientError() throws JsonProcessingException {
-    // Given
-    SignupRequest signupRequest = SignupRequest.builder()
-        .email("invalid-email@example.com")
-        .name("John Doe")
-        .password("validPassword123")
-        .build();
+        // When
+        ResponseEntity<SignUpResponse> result = memberService.signUp(signupRequest);
 
-    // JSON 문자열과 해당 문자열을 파싱한 결과 객체
-    String errorResponse = "{\"message\":\"Invalid request\"}";
-    Response mockResponse = new Response("Invalid request");
+        // Then
+        Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
+    }
 
-    // HttpClientErrorException을 모킹하여 예외의 응답 본문이 JSON 문자열로 반환되도록 설정
-    HttpClientErrorException exception = mock(HttpClientErrorException.class);
-    when(exception.getResponseBodyAsString()).thenReturn(errorResponse);
-    when(exception.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
+    @Test
+    @DisplayName("회원가입 요청 중 client 에러 발생")
+    public void signUp_clientError() throws JsonProcessingException {
+        // Given
+        SignUpRequest signupRequest = SignUpRequest.builder()
+            .email("invalid-email@example.com")
+            .name("John Doe")
+            .password("validPassword123")
+            .build();
 
-    // 예외를 던지도록 설정
-    when(memberRepository.saveMember(signupRequest)).thenThrow(exception);
+        // JSON 문자열과 해당 문자열을 파싱한 결과 객체
+        String errorResponse = "{\"message\":\"Invalid request\"}";
+        Response mockResponse = new Response("Invalid request");
 
-    // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
-    when(objectMapper.readValue(errorResponse, Response.class)).thenReturn(mockResponse);
+        // HttpClientErrorException을 모킹하여 예외의 응답 본문이 JSON 문자열로 반환되도록 설정
+        HttpClientErrorException exception = mock(HttpClientErrorException.class);
+        when(exception.getResponseBodyAsString()).thenReturn(errorResponse);
+        when(exception.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
 
-    // When & Then
-    DbValidException thrown = assertThrows(DbValidException.class, () -> memberService.signUp(signupRequest));
-  }
+        // 예외를 던지도록 설정
+        when(memberRepository.saveMember(signupRequest)).thenThrow(exception);
+
+        // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
+        when(objectMapper.readValue(errorResponse, Response.class)).thenReturn(mockResponse);
+
+        // When & Then
+        DbValidException thrown = assertThrows(DbValidException.class, () -> memberService.signUp(signupRequest));
+    }
 }
