@@ -20,9 +20,8 @@ import soma.haeya.edupi_user.client.config.MemberApiRestClientConfig;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignUpRequest;
-import soma.haeya.edupi_user.dto.response.ErrorResponse;
-import soma.haeya.edupi_user.dto.response.SignUpResponse;
+import soma.haeya.edupi_user.dto.request.SignupRequest;
+import soma.haeya.edupi_user.dto.response.SignupResponse;
 
 @SpringBootTest
 @Import(MemberApiRestClientConfig.class)
@@ -75,7 +74,7 @@ class MemberApiClientTest {
     @Test
     @DisplayName("회원 가입 요청")
     void saveMember() throws JsonProcessingException {
-        ErrorResponse mockResponse = new ErrorResponse("회원가입 성공");
+        SignupResponse mockResponse = new SignupResponse("회원가입 성공");
 
         // mockWebServer 응답 설정
         mockWebServer.enqueue(new MockResponse()
@@ -83,13 +82,13 @@ class MemberApiClientTest {
             .setBody(mapper.writeValueAsString(mockResponse))
             .addHeader("Content-Type", "application/json"));
 
-        SignUpRequest signupRequest = SignUpRequest.builder()
+        SignupRequest signupRequest = SignupRequest.builder()
             .email("valid-email@naver.com")
             .name("Any")
             .password("qpwoeiruty00@")
             .build();
 
-        ResponseEntity<SignUpResponse> result = memberApiClient.saveMember(signupRequest);
+        ResponseEntity<SignupResponse> result = memberApiClient.saveMember(signupRequest);
 
         // Then
         Assertions.assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);

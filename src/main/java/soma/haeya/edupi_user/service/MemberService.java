@@ -13,9 +13,9 @@ import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.dto.TokenInfo;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignUpRequest;
+import soma.haeya.edupi_user.dto.request.SignupRequest;
 import soma.haeya.edupi_user.dto.response.ErrorResponse;
-import soma.haeya.edupi_user.dto.response.SignUpResponse;
+import soma.haeya.edupi_user.dto.response.SignupResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
 import soma.haeya.edupi_user.exception.InnerServerException;
 
@@ -34,10 +34,10 @@ public class MemberService {
         return tokenProvider.generateToken(findMember);
     }
 
-    public ResponseEntity<SignUpResponse> signUp(SignUpRequest signupRequest) throws JsonProcessingException {
+    public ResponseEntity<SignupResponse> signUp(SignupRequest signupRequest) throws JsonProcessingException {
         try {
             // 회원가입 요청을 처리
-            ResponseEntity<SignUpResponse> responseEntity = memberApiClient.saveMember(signupRequest);
+            ResponseEntity<SignupResponse> responseEntity = memberApiClient.saveMember(signupRequest);
 
             return ResponseEntity
                 .status(HttpStatus.OK)
@@ -56,8 +56,10 @@ public class MemberService {
 
         if (e.getStatusCode().is4xxClientError()) {
             throw new DbValidException(response.getMessage());
+
         } else if (e.getStatusCode().is5xxServerError()) {
             throw new InnerServerException(response.getMessage());
+
         } else {
             throw new InnerServerException(e.getMessage());
         }

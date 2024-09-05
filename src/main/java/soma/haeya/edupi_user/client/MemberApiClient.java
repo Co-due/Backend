@@ -7,8 +7,8 @@ import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignUpRequest;
-import soma.haeya.edupi_user.dto.response.SignUpResponse;
+import soma.haeya.edupi_user.dto.request.SignupRequest;
+import soma.haeya.edupi_user.dto.response.SignupResponse;
 
 @Component
 @HttpExchange("/v1/member")
@@ -18,6 +18,6 @@ public interface MemberApiClient {
     Member findMemberByEmailAndPassword(@RequestBody MemberLoginRequest memberLoginRequest);
 
     @PostExchange("/signup")
-    ResponseEntity<SignUpResponse> saveMember(@RequestBody SignUpRequest signupRequest);
+    ResponseEntity<SignupResponse> saveMember(@RequestBody SignupRequest signupRequest);
 
 }

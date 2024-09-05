@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soma.haeya.edupi_user.dto.TokenInfo;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignUpRequest;
-import soma.haeya.edupi_user.dto.response.SignUpResponse;
+import soma.haeya.edupi_user.dto.request.SignupRequest;
+import soma.haeya.edupi_user.dto.response.SignupResponse;
 import soma.haeya.edupi_user.service.MemberService;
 
 @RestController
@@ -59,16 +59,12 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-<<<<<<< HEAD
     @Operation(summary = "회원가입", description = "사용자 측에서 회원가입 할 때 사용하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "회원가입에 성공하였습니다.", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "400", description = "회원가입에 실패했습니다.", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<Response> createPost(@Valid @RequestBody SignupRequest signupRequest)
-=======
-    public ResponseEntity<SignUpResponse> createPost(@Valid @RequestBody SignUpRequest signupRequest)
->>>>>>> 5f00362 ([#26]feat: 회원가입 응답 변경(signup response))
+    public ResponseEntity<SignupResponse> createPost(@Valid @RequestBody SignupRequest signupRequest)
         throws JsonProcessingException {
         return memberService.signUp(signupRequest);
     }

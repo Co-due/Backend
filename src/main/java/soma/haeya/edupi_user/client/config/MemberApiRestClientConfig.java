@@ -11,19 +11,19 @@ import soma.haeya.edupi_user.client.MemberApiClient;
 @Configuration
 public class MemberApiRestClientConfig {
 
-  @Bean
-  public MemberApiClient memberApiClient(
-      @Value("${server-url.db-server}") String dbUrl) {
-    RestClient restClient = RestClient.builder()
-        .baseUrl(dbUrl)
-        .build();
+    @Bean
+    public MemberApiClient memberApiClient(
+        @Value("${server-url.db-server}") String dbUrl) {
+        RestClient restClient = RestClient.builder()
+            .baseUrl(dbUrl)
+            .build();
 
-    RestClientAdapter adapter = RestClientAdapter.create(restClient);
-    HttpServiceProxyFactory factory = HttpServiceProxyFactory
-        .builderFor(adapter)
-        .build();
+        RestClientAdapter adapter = RestClientAdapter.create(restClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory
+            .builderFor(adapter)
+            .build();
 
-    return factory.createClient(MemberApiClient.class);
-  }
+        return factory.createClient(MemberApiClient.class);
+    }
 
 }

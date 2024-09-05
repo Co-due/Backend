@@ -22,9 +22,9 @@ import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.domain.Role;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
-import soma.haeya.edupi_user.dto.request.SignUpRequest;
+import soma.haeya.edupi_user.dto.request.SignupRequest;
 import soma.haeya.edupi_user.dto.response.ErrorResponse;
-import soma.haeya.edupi_user.dto.response.SignUpResponse;
+import soma.haeya.edupi_user.dto.response.SignupResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,20 +88,20 @@ public class MemberServiceTest {
     @DisplayName("회워가입에 성공하면 OK")
     public void signUp_success() throws Exception {
         // Given
-        SignUpRequest signupRequest = SignUpRequest.builder()
+        SignupRequest signupRequest = SignupRequest.builder()
             .email("valid-email@example.com")
             .name("John Doe")
             .password("validPassword123!")
             .build();
 
-        ResponseEntity<SignUpResponse> responseEntity = ResponseEntity
+        ResponseEntity<SignupResponse> responseEntity = ResponseEntity
             .status(HttpStatus.OK)
-            .body(new SignUpResponse(1L, "회원가입 성공"));
+            .body(new SignupResponse("회원가입 성공"));
 
         when(memberRepository.saveMember(signupRequest)).thenReturn(responseEntity);
 
         // When
-        ResponseEntity<SignUpResponse> result = memberService.signUp(signupRequest);
+        ResponseEntity<SignupResponse> result = memberService.signUp(signupRequest);
 
         // Then
         Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
@@ -111,7 +111,7 @@ public class MemberServiceTest {
     @DisplayName("회원가입 요청 중 client 에러 발생")
     public void signUp_clientError() throws JsonProcessingException {
         // Given
-        SignUpRequest signupRequest = SignUpRequest.builder()
+        SignupRequest signupRequest = SignupRequest.builder()
             .email("invalid-email@example.com")
             .name("John Doe")
             .password("validPassword123")
