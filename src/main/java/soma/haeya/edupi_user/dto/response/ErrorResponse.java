@@ -6,14 +6,8 @@ import lombok.Getter;
 public class ErrorResponse {
 
     String message;
-    int errorCode;
 
     public ErrorResponse(String message) {
         this.message = message;
-    }
-    
-    public ErrorResponse(String message, int errorCode) {
-        this.message = message;
-        this.errorCode = errorCode;
     }
 }

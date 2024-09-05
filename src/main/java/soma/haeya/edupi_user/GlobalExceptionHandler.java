@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import soma.haeya.edupi_user.dto.response.ErrorResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
-import soma.haeya.edupi_user.exception.ErrorCode;
 import soma.haeya.edupi_user.exception.InnerServerException;
 
 @Slf4j
@@ -36,7 +35,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DbValidException.class)    // DB 로직 실패에 대한 예외 처리
     public ResponseEntity<ErrorResponse> handleValidationExceptions(DbValidException ex) {
-        ErrorResponse errors = new ErrorResponse(ex.getMessage(), ErrorCode.Alert);
+        ErrorResponse errors = new ErrorResponse(ex.getMessage());
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
@@ -45,7 +44,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InnerServerException.class)    // 내부 서버 에러에 대한 예외 처리
     public ResponseEntity<ErrorResponse> handleValidationExceptions() {
-        ErrorResponse error = new ErrorResponse("잘못된 요청입니다. 다시 시도 해주세요.", ErrorCode.Alert);
+        // 사용자 에러로 변경
+        ErrorResponse error = new ErrorResponse("잘못된 요청입니다. 다시 시도 해주세요.");
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
