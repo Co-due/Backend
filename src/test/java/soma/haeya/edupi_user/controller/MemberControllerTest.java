@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignupRequest;
-import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.dto.response.SignupResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
 import soma.haeya.edupi_user.service.MemberService;
 
@@ -67,7 +67,7 @@ class MemberControllerTest {
         when(memberService.signUp(signupRequest)).thenReturn(
             ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new Response("회원가입 성공"))
+                .body(new SignupResponse("회원가입 성공"))
         );
 
         // When & Then

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import soma.haeya.edupi_user.dto.TokenInfo;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignupRequest;
-import soma.haeya.edupi_user.dto.response.Response;
+import soma.haeya.edupi_user.dto.response.SignupResponse;
 import soma.haeya.edupi_user.service.MemberService;
 
 @RestController
@@ -64,7 +64,7 @@ public class MemberController {
         @ApiResponse(responseCode = "200", description = "회원가입에 성공하였습니다.", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "400", description = "회원가입에 실패했습니다.", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<Response> createPost(@Valid @RequestBody SignupRequest signupRequest)
+    public ResponseEntity<SignupResponse> createPost(@Valid @RequestBody SignupRequest signupRequest)
         throws JsonProcessingException {
         return memberService.signUp(signupRequest);
     }
