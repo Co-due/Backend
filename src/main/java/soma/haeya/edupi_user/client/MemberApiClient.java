@@ -20,4 +20,7 @@ public interface MemberApiClient {
     @PostExchange("/signup")
     ResponseEntity<SignupResponse> saveMember(@RequestBody SignupRequest signupRequest);
 
+    @PostExchange("/check-email")
+    ResponseEntity<Boolean> isEmailDuplicated(@RequestBody String email);
+
 }

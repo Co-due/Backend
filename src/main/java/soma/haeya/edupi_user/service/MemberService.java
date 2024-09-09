@@ -50,6 +50,11 @@ public class MemberService {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    public boolean checkEmailDuplication(String email) {
+        //중복 이메일 확인
+        return Boolean.TRUE.equals(memberApiClient.isEmailDuplicated(email).getBody());
+    }
+
     private void handleHttpClientException(HttpClientErrorException e) throws JsonProcessingException {
         // 예외의 응답 바디를 읽어 Response 객체로 변환
         ErrorResponse response = objectMapper.readValue(e.getResponseBodyAsString(), ErrorResponse.class);

@@ -10,6 +10,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soma.haeya.edupi_user.dto.TokenInfo;
+import soma.haeya.edupi_user.dto.request.EmailRequest;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignupRequest;
 import soma.haeya.edupi_user.dto.response.SignupResponse;
@@ -82,6 +84,20 @@ public class MemberController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/check-email")
+    @Operation(summary = "중복이메일 확인", description = "회원가입 때 중복 아이디를 확인하는 API")
+    public ResponseEntity<String> checkEmailDuplication(EmailRequest emailRequest) {
+        boolean isDuplicated = memberService.checkEmailDuplication(emailRequest.getEmail());
+
+        if (isDuplicated) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("중복 이메일입니다.");
+        } else {
+            return ResponseEntity.ok()
+                .body("사용 가능합니다.");
+        }
     }
 
 }
