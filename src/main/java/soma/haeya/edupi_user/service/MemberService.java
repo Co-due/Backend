@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import soma.haeya.edupi_user.auth.TokenProvider;
 import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.domain.Member;
@@ -46,10 +47,14 @@ public class MemberService {
                 .body(responseEntity.getBody());
 
         } catch (HttpClientErrorException e) {
-            handleHttpClientException(e);
+            ErrorResponse response = e.getResponseBodyAs(ErrorResponse.class);
+            throw new DbValidException(response.getMessage());
+
+        } catch (HttpServerErrorException e) {
+            ErrorResponse response = e.getResponseBodyAs(ErrorResponse.class);
+            throw new InnerServerException(response.getMessage());
         }
         // 헝성 예외를 던지기 때문에 이 부분은 도달하지 않음
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     private void handleHttpClientException(HttpClientErrorException e) throws JsonProcessingException {
