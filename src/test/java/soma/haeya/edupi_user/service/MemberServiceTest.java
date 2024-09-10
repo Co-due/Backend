@@ -1,6 +1,5 @@
 package soma.haeya.edupi_user.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -117,22 +116,15 @@ public class MemberServiceTest {
             .password("validPassword123")
             .build();
 
-        // JSON 문자열과 해당 문자열을 파싱한 결과 객체
-        String errorResponse = "{\"message\":\"Invalid request\"}";
-        ErrorResponse mockResponse = new ErrorResponse("Invalid request");
-
-        // HttpClientErrorException을 모킹하여 예외의 응답 본문이 JSON 문자열로 반환되도록 설정
         HttpClientErrorException exception = mock(HttpClientErrorException.class);
-        when(exception.getResponseBodyAsString()).thenReturn(errorResponse);
-        when(exception.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
-
-        // 예외를 던지도록 설정
-        when(memberRepository.saveMember(signupRequest)).thenThrow(exception);
-
-        // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
-        when(objectMapper.readValue(errorResponse, ErrorResponse.class)).thenReturn(mockResponse);
+        when(memberRepository.saveMember(signupRequest)).thenThrow(
+            exception
+        );
+        // 예외가 던져질 때 반환할 상태 코드 및 응답 본문 모킹
+        when(exception.getResponseBodyAs(ErrorResponse.class)).thenReturn(new ErrorResponse("회원가입 실패"));
 
         // When & Then
-        DbValidException thrown = assertThrows(DbValidException.class, () -> memberService.signUp(signupRequest));
+        Assertions.assertThatThrownBy(() -> memberService.signUp(signupRequest))
+            .isInstanceOf(DbValidException.class);
     }
 }

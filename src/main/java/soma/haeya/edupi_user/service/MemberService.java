@@ -54,22 +54,6 @@ public class MemberService {
             ErrorResponse response = e.getResponseBodyAs(ErrorResponse.class);
             throw new InnerServerException(response.getMessage());
         }
-        // 헝성 예외를 던지기 때문에 이 부분은 도달하지 않음
-    }
-
-    private void handleHttpClientException(HttpClientErrorException e) throws JsonProcessingException {
-        // 예외의 응답 바디를 읽어 Response 객체로 변환
-        ErrorResponse response = objectMapper.readValue(e.getResponseBodyAsString(), ErrorResponse.class);
-
-        if (e.getStatusCode().is4xxClientError()) {
-            throw new DbValidException(response.getMessage());
-
-        } else if (e.getStatusCode().is5xxServerError()) {
-            throw new InnerServerException(response.getMessage());
-
-        } else {
-            throw new InnerServerException(e.getMessage());
-        }
     }
 
     public void checkEmailDuplication(EmailRequest emailRequest) {
