@@ -1,7 +1,9 @@
 package soma.haeya.edupi_user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +13,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import soma.haeya.edupi_user.dto.response.ErrorResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
+import soma.haeya.edupi_user.exception.EmailAlreadyExistsException;
 import soma.haeya.edupi_user.exception.InnerServerException;
 
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final ObjectMapper objectMapper;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)    // @Valid 실패에 대한 예외 처리
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -31,6 +37,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(errors);
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)    // 이메일 중복
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(DbValidException.class)    // DB 로직 실패에 대한 예외 처리

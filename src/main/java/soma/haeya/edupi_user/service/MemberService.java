@@ -12,11 +12,13 @@ import soma.haeya.edupi_user.auth.TokenProvider;
 import soma.haeya.edupi_user.client.MemberApiClient;
 import soma.haeya.edupi_user.domain.Member;
 import soma.haeya.edupi_user.dto.TokenInfo;
+import soma.haeya.edupi_user.dto.request.EmailRequest;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignupRequest;
 import soma.haeya.edupi_user.dto.response.ErrorResponse;
 import soma.haeya.edupi_user.dto.response.SignupResponse;
 import soma.haeya.edupi_user.exception.DbValidException;
+import soma.haeya.edupi_user.exception.EmailAlreadyExistsException;
 import soma.haeya.edupi_user.exception.InnerServerException;
 
 @Service
@@ -50,11 +52,6 @@ public class MemberService {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    public boolean checkEmailDuplication(String email) {
-        //중복 이메일 확인
-        return Boolean.TRUE.equals(memberApiClient.isEmailDuplicated(email).getBody());
-    }
-
     private void handleHttpClientException(HttpClientErrorException e) throws JsonProcessingException {
         // 예외의 응답 바디를 읽어 Response 객체로 변환
         ErrorResponse response = objectMapper.readValue(e.getResponseBodyAsString(), ErrorResponse.class);
@@ -69,6 +66,19 @@ public class MemberService {
             throw new InnerServerException(e.getMessage());
         }
     }
+
+    public void checkEmailDuplication(EmailRequest emailRequest) {
+        try {
+            //중복 이메일 확인
+            memberApiClient.emailDuplicated(emailRequest);
+
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT)) {
+                throw new EmailAlreadyExistsException();
+            }
+        }
+    }
+
 
     public TokenInfo findMemberInfo(String token) {
         return tokenProvider.findUserInfoBy(token);

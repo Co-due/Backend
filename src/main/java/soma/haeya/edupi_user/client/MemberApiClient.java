@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 import soma.haeya.edupi_user.domain.Member;
+import soma.haeya.edupi_user.dto.request.EmailRequest;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignupRequest;
 import soma.haeya.edupi_user.dto.response.SignupResponse;
@@ -21,6 +22,6 @@ public interface MemberApiClient {
     ResponseEntity<SignupResponse> saveMember(@RequestBody SignupRequest signupRequest);
 
     @PostExchange("/check-email")
-    ResponseEntity<Boolean> isEmailDuplicated(@RequestBody String email);
+    ResponseEntity<Void> emailDuplicated(@RequestBody EmailRequest emailRequest);
 
 }

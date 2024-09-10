@@ -10,7 +10,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +22,7 @@ import soma.haeya.edupi_user.dto.request.EmailRequest;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignupRequest;
 import soma.haeya.edupi_user.dto.response.SignupResponse;
+import soma.haeya.edupi_user.dto.response.SuccessResponse;
 import soma.haeya.edupi_user.service.MemberService;
 
 @RestController
@@ -88,16 +88,15 @@ public class MemberController {
 
     @PostMapping("/check-email")
     @Operation(summary = "중복이메일 확인", description = "회원가입 때 중복 아이디를 확인하는 API")
-    public ResponseEntity<String> checkEmailDuplication(EmailRequest emailRequest) {
-        boolean isDuplicated = memberService.checkEmailDuplication(emailRequest.getEmail());
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "사용 가능합니다.", content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "409", description = "중복 이메일입니다.", content = @Content(mediaType = "application/json")),
+    })
+    public ResponseEntity<SuccessResponse> checkEmailDuplication(@Valid @RequestBody EmailRequest emailRequest) {
+        memberService.checkEmailDuplication(emailRequest);
 
-        if (isDuplicated) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("중복 이메일입니다.");
-        } else {
-            return ResponseEntity.ok()
-                .body("사용 가능합니다.");
-        }
+        return ResponseEntity.ok()
+            .body(new SuccessResponse("사용 가능합니다."));
     }
 
 }
