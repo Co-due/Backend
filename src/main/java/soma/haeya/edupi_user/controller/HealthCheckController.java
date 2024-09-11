@@ -11,7 +11,6 @@ public class HealthCheckController {
 
     @GetMapping("/")
     @Operation(summary = "헬스 체크")
-
     public String healthCheck() {
         return "OK";
     }
