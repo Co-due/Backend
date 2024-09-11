@@ -19,10 +19,13 @@ public class OpenApiConfig {
     private static final String SCHEME_TYPE = "bearer";
 
     @Bean
-    public OpenAPI openAPI(@Value("${openapi.service.url}") String url) {
+    public OpenAPI openAPI(
+        @Value("${openapi.service.url}") String url,
+        @Value("${openapi.service.title}") String title,
+        @Value("${openapi.service.version}") String version) {
         return new OpenAPI()
             .servers(List.of(new Server().url(url)))
-            .info(apiInfo())
+            .info(apiInfo(title, version))
             .addSecurityItem(createSecurityRequirement())
             .components(createComponents());
     }
@@ -31,10 +34,10 @@ public class OpenApiConfig {
         return new SecurityRequirement().addList(SECURITY_SCHEME_NAME);
     }
 
-    private Info apiInfo() {
+    private Info apiInfo(String title, String version) {
         return new Info()
-            .title("User API")
-            .version("1.0.0");
+            .title(title)
+            .version(version);
     }
 
     private Components createComponents() {
