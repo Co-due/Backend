@@ -44,7 +44,7 @@ class MemberControllerTest {
 
         doReturn("token").when(memberService).login(memberLoginRequest);
 
-        mockMvc.perform(post("/member/login")
+        mockMvc.perform(post("/v1/member/login")
                 .content(objectMapper.writeValueAsString(memberLoginRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -71,7 +71,7 @@ class MemberControllerTest {
         );
 
         // When & Then
-        mockMvc.perform(post("/member/signup")
+        mockMvc.perform(post("/v1/member/signup")
             .content(objectMapper.writeValueAsString(signupRequest))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
@@ -94,7 +94,7 @@ class MemberControllerTest {
             .thenThrow(new DbValidException("Invalid email address"));
 
         // When & Then
-        mockMvc.perform(post("/member/signup")
+        mockMvc.perform(post("/v1/member/signup")
                 .content(objectMapper.writeValueAsString(signupRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
