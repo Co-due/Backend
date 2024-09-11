@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import soma.haeya.edupi_user.dto.TokenInfo;
 import soma.haeya.edupi_user.dto.request.MemberLoginRequest;
 import soma.haeya.edupi_user.dto.request.SignupRequest;
+import soma.haeya.edupi_user.dto.response.SignupResponse;
 import soma.haeya.edupi_user.service.MemberService;
 
 @RestController
@@ -46,7 +47,7 @@ public class MemberController implements MemberSpecification {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Response> createPost(@Valid @RequestBody SignupRequest signupRequest)
+    public ResponseEntity<SignupResponse> createPost(@Valid @RequestBody SignupRequest signupRequest)
         throws JsonProcessingException {
         return memberService.signUp(signupRequest);
     }
