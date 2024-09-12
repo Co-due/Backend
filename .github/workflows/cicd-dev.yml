@@ -8,7 +8,7 @@ env:
   AWS_REGION: ap-northeast-2
   ECR_REPOSITORY: edupi_user
   ECS_SERVICE: user
-  ECS_CLUSTER: BE
+  ECS_CLUSTER: BE-fargate
   ECS_TASK_DEFINITION: edupi_user.json
   CONTAINER_NAME: user
 
