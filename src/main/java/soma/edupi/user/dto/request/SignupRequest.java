@@ -8,12 +8,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class SignupRequest {
 
     @NotBlank(message = "이메일은 공백이 아니어야 합니다.")

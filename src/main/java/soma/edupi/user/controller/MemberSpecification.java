@@ -6,15 +6,16 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
-import soma.edupi.user.dto.response.TokenInfo;
 import soma.edupi.user.dto.request.MemberLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.SignupResponse;
+import soma.edupi.user.dto.response.TokenInfo;
 
 @Tag(name = "Member", description = "Member API")
 public interface MemberSpecification {
@@ -34,8 +35,8 @@ public interface MemberSpecification {
         @ApiResponse(responseCode = "200", description = "회원가입에 성공하였습니다.", content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "400", description = "회원가입에 실패했습니다.", content = @Content(mediaType = "application/json"))
     })
-    ResponseEntity<SignupResponse> createPost(@Valid @RequestBody SignupRequest signupRequest)
-        throws JsonProcessingException;
+    ResponseEntity<SignupResponse> createAccount(@Valid @RequestBody SignupRequest signupRequest)
+        throws JsonProcessingException, MessagingException;
 
 
     @Operation(summary = "로그아웃", description = "사용자 측에서 로그아웃 할 때 사용하는 API")

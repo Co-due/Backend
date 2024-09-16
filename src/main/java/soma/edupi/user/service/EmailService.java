@@ -19,7 +19,7 @@ public class EmailService {
 
 
     @Value("${server-url.gateway}")
-    private String serverUrl;
+    private String gatewayUrl;
 
     private final JavaMailSender emailSender;
 
@@ -27,8 +27,6 @@ public class EmailService {
     public void sendEmail(String toEmail) throws MessagingException {
         MimeMessage emailForm = createEmailForm(toEmail);
         log.warn("MailService.sendEmail exception occur toEmail: {}", toEmail);
-        emailSender.send(emailForm);
-
         // 이메일 발송
         emailSender.send(emailForm);
     }
@@ -57,7 +55,7 @@ public class EmailService {
         // Context 객체에 변수를 추가하지 않음 (빈 컨텍스트)
         Context context = new Context();
         context.setVariable("email", email);
-        context.setVariable("serverUrl", serverUrl);
+        context.setVariable("gatewayUrl", gatewayUrl);
 
         return templateEngine.process("mail", context);
     }

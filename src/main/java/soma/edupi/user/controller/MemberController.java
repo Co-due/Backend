@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import soma.edupi.user.dto.request.EmailRequest;
 import soma.edupi.user.dto.request.MemberLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.SignupResponse;
@@ -51,14 +50,11 @@ public class MemberController implements MemberSpecification {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> createPost(@Valid @RequestBody SignupRequest signupRequest)
-        throws JsonProcessingException {
-        return memberService.signUp(signupRequest);
-    }
+    public ResponseEntity<SignupResponse> createAccount(@Valid @RequestBody SignupRequest signupRequest)
+        throws JsonProcessingException, MessagingException {
+        memberService.signUp(signupRequest);
+        emailService.sendEmail(signupRequest.getEmail());
 
-    @PostMapping("/email")
-    public ResponseEntity<SignupResponse> sendEmail(@RequestBody EmailRequest email) throws MessagingException {
-        emailService.sendEmail(email.getEmail());
         return ResponseEntity.ok().build();
     }
 
