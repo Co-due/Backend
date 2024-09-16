@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -24,11 +25,18 @@ public class EmailService {
     private final JavaMailSender emailSender;
 
 
+    @Async
     public void sendEmail(String toEmail) throws MessagingException {
         MimeMessage emailForm = createEmailForm(toEmail);
         log.warn("MailService.sendEmail exception occur toEmail: {}", toEmail);
         // 이메일 발송
         emailSender.send(emailForm);
+    }
+
+    public boolean verifyEmailCode(String email) {
+        // TODO: DB의 account 활성화
+
+        return true;
     }
 
     private MimeMessage createEmailForm(String toEmail) throws MessagingException {
@@ -52,11 +60,12 @@ public class EmailService {
 
         templateEngine.setTemplateResolver(templateResolver);
 
-        // Context 객체에 변수를 추가하지 않음 (빈 컨텍스트)
         Context context = new Context();
         context.setVariable("email", email);
         context.setVariable("gatewayUrl", gatewayUrl);
 
         return templateEngine.process("mail", context);
     }
+
+
 }
