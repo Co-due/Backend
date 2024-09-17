@@ -16,31 +16,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import soma.edupi.user.client.config.MemberApiRestClientConfig;
-import soma.edupi.user.domain.Member;
+import soma.edupi.user.client.config.DbServerApiRestClientConfig;
+import soma.edupi.user.domain.Account;
 import soma.edupi.user.domain.Role;
-import soma.edupi.user.dto.request.MemberLoginRequest;
+import soma.edupi.user.dto.request.AccountLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.SignupResponse;
 
 @SpringBootTest
-@Import(MemberApiRestClientConfig.class)
-class MemberApiClientTest {
+@Import(DbServerApiRestClientConfig.class)
+class AccountApiClientTest {
 
     @Autowired
     private ObjectMapper mapper;
 
     private MockWebServer mockWebServer;
-    private MemberApiClient memberApiClient;
+    private DbServerApiClient dbServerApiClient;
 
     @BeforeEach
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
-        // memberApiClient에 mockWebServer를 적용해 테스트
-        MemberApiRestClientConfig config = new MemberApiRestClientConfig();
-        memberApiClient = config.memberApiClient(
+        // dbApiClient에 mockWebServer를 적용해 테스트
+        DbServerApiRestClientConfig config = new DbServerApiRestClientConfig();
+        dbServerApiClient = config.dbServerApiClient(
             mockWebServer.url("/").toString());
     }
 
@@ -54,18 +54,18 @@ class MemberApiClientTest {
     @Test
     @DisplayName("이메일과 비밀번호로 회원을 찾는 Http 요청 테스트")
     void testFindMemberByEmailAndPassword() throws JsonProcessingException {
-        Member expectedResponse = new Member(1L, "asdf@naver.com", "", "홍길동", Role.ROLE_USER);
+        Account expectedResponse = new Account(1L, "asdf@naver.com", "", "홍길동", Role.ROLE_USER);
 
         // mockWebServer 응답 설정
         mockWebServer.enqueue(new MockResponse()
             .setBody(mapper.writeValueAsString(expectedResponse))
             .addHeader("Content-Type", "application/json"));
 
-        MemberLoginRequest request = MemberLoginRequest.builder()
+        AccountLoginRequest request = AccountLoginRequest.builder()
             .email("asdf@naver.com")
             .password("password").build();
 
-        Member result = memberApiClient.findMemberByEmailAndPassword(request);
+        Account result = dbServerApiClient.login(request);
 
         Assertions.assertThat(result.getEmail()).isEqualTo(expectedResponse.getEmail());
         Assertions.assertThat(result.getName()).isEqualTo(expectedResponse.getName());
@@ -73,7 +73,7 @@ class MemberApiClientTest {
 
     @Test
     @DisplayName("회원 가입 요청")
-    void saveMember() throws JsonProcessingException {
+    void saveAccount() throws JsonProcessingException {
         SignupResponse mockResponse = new SignupResponse("회원가입 성공");
 
         // mockWebServer 응답 설정
@@ -88,7 +88,7 @@ class MemberApiClientTest {
             .password("qpwoeiruty00@")
             .build();
 
-        ResponseEntity<SignupResponse> result = memberApiClient.saveMember(signupRequest);
+        ResponseEntity<SignupResponse> result = dbServerApiClient.saveAccount(signupRequest);
 
         // Then
         Assertions.assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);

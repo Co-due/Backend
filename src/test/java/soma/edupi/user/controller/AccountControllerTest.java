@@ -16,18 +16,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import soma.edupi.user.dto.request.MemberLoginRequest;
+import soma.edupi.user.dto.request.AccountLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.SignupResponse;
 import soma.edupi.user.exception.DbValidException;
+import soma.edupi.user.service.AccountService;
 import soma.edupi.user.service.EmailService;
-import soma.edupi.user.service.MemberService;
 
-@WebMvcTest(MemberController.class)
-class MemberControllerTest {
+@WebMvcTest(AccountController.class)
+class AccountControllerTest {
 
     @MockBean
-    MemberService memberService;
+    AccountService accountService;
 
     @MockBean
     EmailService emailService;
@@ -41,15 +41,15 @@ class MemberControllerTest {
     @Test
     @DisplayName("로그인에 성공하면 jwt 토큰을 쿠키에 넣는다.")
     void login() throws Exception {
-        MemberLoginRequest memberLoginRequest = MemberLoginRequest.builder()
+        AccountLoginRequest accountLoginRequest = AccountLoginRequest.builder()
             .email("asdf@naver.com")
             .password("asdf1234")
             .build();
 
-        doReturn("token").when(memberService).login(memberLoginRequest);
+        doReturn("token").when(accountService).login(accountLoginRequest);
 
-        mockMvc.perform(post("/v1/member/login")
-                .content(objectMapper.writeValueAsString(memberLoginRequest))
+        mockMvc.perform(post("/v1/account/login")
+                .content(objectMapper.writeValueAsString(accountLoginRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isOk())
@@ -67,14 +67,14 @@ class MemberControllerTest {
             .build();
 
         // Mocking
-        when(memberService.signup(signupRequest)).thenReturn(
+        when(accountService.signup(signupRequest)).thenReturn(
             ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new SignupResponse("회원가입 성공"))
         );
 
         // When & Then
-        mockMvc.perform(post("/v1/member/signup")
+        mockMvc.perform(post("/v1/account/signup")
             .content(objectMapper.writeValueAsString(signupRequest))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
@@ -93,11 +93,11 @@ class MemberControllerTest {
             .build();
 
         // Mocking
-        when(memberService.signup(signupRequest))
+        when(accountService.signup(signupRequest))
             .thenThrow(new DbValidException("Invalid email address"));
 
         // When & Then
-        mockMvc.perform(post("/v1/member/signup")
+        mockMvc.perform(post("/v1/account/signup")
                 .content(objectMapper.writeValueAsString(signupRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))

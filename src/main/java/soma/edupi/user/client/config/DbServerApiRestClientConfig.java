@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
-import soma.edupi.user.client.MemberApiClient;
+import soma.edupi.user.client.DbServerApiClient;
 
 @Configuration
-public class MemberApiRestClientConfig {
+public class DbServerApiRestClientConfig {
 
     @Bean
-    public MemberApiClient memberApiClient(
+    public DbServerApiClient dbServerApiClient(
         @Value("${server-url.db-server}") String dbUrl) {
         RestClient restClient = RestClient.builder()
             .baseUrl(dbUrl)
@@ -23,7 +23,7 @@ public class MemberApiRestClientConfig {
             .builderFor(adapter)
             .build();
 
-        return factory.createClient(MemberApiClient.class);
+        return factory.createClient(DbServerApiClient.class);
     }
 
 }

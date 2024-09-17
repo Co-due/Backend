@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import soma.edupi.user.domain.Member;
+import soma.edupi.user.domain.Account;
 import soma.edupi.user.domain.Role;
 import soma.edupi.user.dto.response.TokenInfo;
 
@@ -16,11 +16,11 @@ public class TokenProviderTest {
     @Autowired
     private TokenProvider tokenProvider;
 
-    private Member member;
+    private Account member;
 
     @BeforeEach
     void init() {
-        member = new Member("asdf@naver.com", "홍길동", Role.ROLE_USER);
+        member = new Account("asdf@naver.com", "홍길동", Role.ROLE_USER);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class TokenProviderTest {
     void findUserInfoBy() {
         String token = tokenProvider.generateToken(member);
 
-        TokenInfo tokenInfo = tokenProvider.findUserInfoBy(token);
+        TokenInfo tokenInfo = tokenProvider.findAccountInfoBy(token);
 
         Assertions.assertThat(tokenInfo.getEmail()).isEqualTo(member.getEmail());
         Assertions.assertThat(tokenInfo.getName()).isEqualTo(member.getName());

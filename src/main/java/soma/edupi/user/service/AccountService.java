@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import soma.edupi.user.auth.TokenProvider;
-import soma.edupi.user.client.MemberApiClient;
-import soma.edupi.user.domain.Member;
-import soma.edupi.user.dto.request.MemberLoginRequest;
+import soma.edupi.user.client.DbServerApiClient;
+import soma.edupi.user.domain.Account;
+import soma.edupi.user.dto.request.AccountLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.ErrorResponse;
 import soma.edupi.user.dto.response.SignupResponse;
@@ -22,22 +22,22 @@ import soma.edupi.user.exception.InnerServerException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MemberService {
+public class AccountService {
 
-    private final MemberApiClient memberApiClient;
+    private final DbServerApiClient dbServerApiClient;
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
 
-    public String login(MemberLoginRequest memberLoginRequest) {
-        Member findMember = memberApiClient.findMemberByEmailAndPassword(memberLoginRequest);
+    public String login(AccountLoginRequest accountLoginRequest) {
+        Account findAccount = dbServerApiClient.login(accountLoginRequest);
 
-        return tokenProvider.generateToken(findMember);
+        return tokenProvider.generateToken(findAccount);
     }
 
     public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) throws JsonProcessingException {
         try {
             // 회원가입 요청을 처리
-            ResponseEntity<SignupResponse> responseEntity = memberApiClient.saveMember(signupRequest);
+            ResponseEntity<SignupResponse> responseEntity = dbServerApiClient.saveAccount(signupRequest);
 
             return ResponseEntity
                 .status(HttpStatus.OK)
@@ -65,8 +65,8 @@ public class MemberService {
         }
     }
 
-    public TokenInfo findMemberInfo(String token) {
-        return tokenProvider.findUserInfoBy(token);
+    public TokenInfo findAccountInfo(String token) {
+        return tokenProvider.findAccountInfoBy(token);
     }
 
 }

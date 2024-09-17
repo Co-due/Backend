@@ -11,7 +11,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import soma.edupi.user.domain.Member;
+import soma.edupi.user.domain.Account;
 import soma.edupi.user.domain.Role;
 import soma.edupi.user.dto.response.TokenInfo;
 
@@ -27,11 +27,12 @@ public class TokenProvider {
         this.expiration = expiration;
     }
 
-    public String generateToken(Member member) {
+    public String generateToken(Account member) {
         long now = (new Date()).getTime();
         Date tokenExpiration = new Date(now + expiration);
 
         return Jwts.builder()
+            .claim("accountId", member.getId())
             .claim("email", member.getEmail())
             .claim("name", member.getName())
             .claim("role", member.getRole())
@@ -40,7 +41,7 @@ public class TokenProvider {
             .compact();
     }
 
-    public TokenInfo findUserInfoBy(String token) {
+    public TokenInfo findAccountInfoBy(String token) {
         Claims claims = getClaims(token);
 
         isTokenExpired(claims); // 토큰이 유효한지 검사

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MemberLoginRequest {
+public class AccountLoginRequest {
 
     @NotNull
     @NotBlank
@@ -19,7 +19,7 @@ public class MemberLoginRequest {
     private String password;
 
     @Builder
-    public MemberLoginRequest(String email, String password) {
+    public AccountLoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }

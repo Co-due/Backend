@@ -18,23 +18,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import soma.edupi.user.auth.TokenProvider;
-import soma.edupi.user.client.MemberApiClient;
-import soma.edupi.user.domain.Member;
+import soma.edupi.user.client.DbServerApiClient;
+import soma.edupi.user.domain.Account;
 import soma.edupi.user.domain.Role;
-import soma.edupi.user.dto.request.MemberLoginRequest;
+import soma.edupi.user.dto.request.AccountLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.ErrorResponse;
 import soma.edupi.user.dto.response.SignupResponse;
 import soma.edupi.user.exception.DbValidException;
 
 @ExtendWith(MockitoExtension.class)
-public class MemberServiceTest {
+public class AccountServiceTest {
 
     @InjectMocks
-    private MemberService memberService;
+    private AccountService accountService;
 
     @Mock
-    private MemberApiClient memberRepository;
+    private DbServerApiClient dbServerApiClient;
 
     @Mock
     private TokenProvider tokenProvider;
@@ -42,12 +42,12 @@ public class MemberServiceTest {
     @Mock
     private ObjectMapper objectMapper;
 
-    private MemberLoginRequest memberLoginRequest;
+    private AccountLoginRequest accountLoginRequest;
 
 
     @BeforeEach
     void init() {
-        memberLoginRequest = MemberLoginRequest.builder()
+        accountLoginRequest = AccountLoginRequest.builder()
             .email("asdf@naver.com")
             .password("asdf1234")
             .build();
@@ -56,30 +56,30 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("아이디와 패스워드에 맞는 멤버가 있으면 token을 반환한다.")
-    void memberLogin() {
+    void accountLogin() {
 
-        Member expectedMember = new Member("asdf@naver.com", "홍길동", Role.ROLE_USER);
+        Account expectedAccount = new Account("asdf@naver.com", "홍길동", Role.ROLE_USER);
 
         String expectedToken = "token";
 
-        when(memberRepository.findMemberByEmailAndPassword(memberLoginRequest)).thenReturn(
-            expectedMember);
-        when(tokenProvider.generateToken(expectedMember)).thenReturn(expectedToken);
+        when(dbServerApiClient.login(accountLoginRequest)).thenReturn(
+            expectedAccount);
+        when(tokenProvider.generateToken(expectedAccount)).thenReturn(expectedToken);
 
-        String resultToken = memberService.login(memberLoginRequest);
+        String resultToken = accountService.login(accountLoginRequest);
 
         Assertions.assertThat(resultToken).isEqualTo(expectedToken);
     }
 
     @Test
     @DisplayName("아이디 패스워드에 맞는 멤버가 없으면 예외를 반환한다.")
-    void memberLoginException() {
+    void AccountLoginException() {
 
-        when(memberRepository.findMemberByEmailAndPassword(memberLoginRequest)).thenThrow(
+        when(dbServerApiClient.login(accountLoginRequest)).thenThrow(
             new IllegalArgumentException("아이디 비밀번호가 일치하지 않습니다.")
         );
 
-        Assertions.assertThatThrownBy(() -> memberService.login(memberLoginRequest))
+        Assertions.assertThatThrownBy(() -> accountService.login(accountLoginRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("아이디 비밀번호가 일치하지 않습니다.");
     }
@@ -98,10 +98,10 @@ public class MemberServiceTest {
             .status(HttpStatus.OK)
             .body(new SignupResponse("회원가입 성공"));
 
-        when(memberRepository.saveMember(signupRequest)).thenReturn(responseEntity);
+        when(dbServerApiClient.saveAccount(signupRequest)).thenReturn(responseEntity);
 
         // When
-        ResponseEntity<SignupResponse> result = memberService.signup(signupRequest);
+        ResponseEntity<SignupResponse> result = accountService.signup(signupRequest);
 
         // Then
         Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
@@ -127,12 +127,12 @@ public class MemberServiceTest {
         when(exception.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
 
         // 예외를 던지도록 설정
-        when(memberRepository.saveMember(signupRequest)).thenThrow(exception);
+        when(dbServerApiClient.saveAccount(signupRequest)).thenThrow(exception);
 
         // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
         when(objectMapper.readValue(errorResponse, ErrorResponse.class)).thenReturn(mockResponse);
 
         // When & Then
-        DbValidException thrown = assertThrows(DbValidException.class, () -> memberService.signup(signupRequest));
+        DbValidException thrown = assertThrows(DbValidException.class, () -> accountService.signup(signupRequest));
     }
 }

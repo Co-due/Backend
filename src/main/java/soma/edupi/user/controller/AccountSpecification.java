@@ -12,19 +12,20 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
-import soma.edupi.user.dto.request.MemberLoginRequest;
+import soma.edupi.user.dto.request.AccountLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.SignupResponse;
 import soma.edupi.user.dto.response.TokenInfo;
 
 @Tag(name = "Member", description = "Member API")
-public interface MemberSpecification {
+public interface AccountSpecification {
 
     @Operation(summary = "로그인", description = "아이디 패스워드를 받아서 토큰을 발급하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "토큰 발급에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
-    ResponseEntity<Void> login(@Valid @RequestBody MemberLoginRequest memberLoginRequest, HttpServletResponse response);
+    ResponseEntity<Void> login(@Valid @RequestBody AccountLoginRequest memberLoginRequest,
+        HttpServletResponse response);
 
     @Operation(summary = "로그인", description = "발급받은 토큰의 정보를 조회하는 API ")
     @ApiResponse(responseCode = "200", description = "로그인에 성공하였습니다.", content = @Content(mediaType = "application/json"))

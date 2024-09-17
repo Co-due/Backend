@@ -14,27 +14,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import soma.edupi.user.dto.request.AccountLoginRequest;
 import soma.edupi.user.dto.request.EmailRequest;
-import soma.edupi.user.dto.request.MemberLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.SignupResponse;
 import soma.edupi.user.dto.response.TokenInfo;
+import soma.edupi.user.service.AccountService;
 import soma.edupi.user.service.EmailService;
-import soma.edupi.user.service.MemberService;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/member")
-public class MemberController implements MemberSpecification {
+@RequestMapping("/v1/account")
+public class AccountController implements AccountSpecification {
 
-    private final MemberService memberService;
     private final EmailService emailService;
+    private final AccountService accountService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@Valid @RequestBody MemberLoginRequest memberLoginRequest,
+    public ResponseEntity<Void> login(@Valid @RequestBody AccountLoginRequest accountLoginRequest,
         HttpServletResponse response) {
-        String token = memberService.login(memberLoginRequest);
+        String token = accountService.login(accountLoginRequest);
 
         Cookie cookie = new Cookie("token", token);
         cookie.setPath("/");
@@ -47,7 +47,7 @@ public class MemberController implements MemberSpecification {
 
     @GetMapping("/login/info")
     public ResponseEntity<TokenInfo> loginInfo(@CookieValue("token") String token) {
-        TokenInfo tokenInfo = memberService.findMemberInfo(token);
+        TokenInfo tokenInfo = accountService.findAccountInfo(token);
 
         return ResponseEntity.ok(tokenInfo);
     }
@@ -55,7 +55,7 @@ public class MemberController implements MemberSpecification {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> createAccount(@Valid @RequestBody SignupRequest signupRequest)
         throws JsonProcessingException, MessagingException {
-        memberService.signup(signupRequest);
+        accountService.signup(signupRequest);
         emailService.sendEmail(signupRequest.getEmail());
 
         return ResponseEntity.ok().build();
