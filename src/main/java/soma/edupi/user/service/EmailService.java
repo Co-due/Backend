@@ -24,6 +24,9 @@ public class EmailService {
     @Value("${server-url.gateway}")
     private String gatewayUrl;
 
+    @Value("${site-url.login}")
+    private String loginUrl;
+
     private final JavaMailSender emailSender;
     private final MemberApiClient memberApiClient;
 
@@ -31,9 +34,10 @@ public class EmailService {
     @Async
     public void sendEmail(String toEmail) throws MessagingException {
         MimeMessage emailForm = createEmailForm(toEmail);
-        log.warn("MailService.sendEmail exception occur toEmail: {}", toEmail);
         // 이메일 발송
         emailSender.send(emailForm);
+        log.info("MailService.sendEmail: toEmail: {}", toEmail);
+
     }
 
     public void activateAccount(EmailRequest emailRequest) {
@@ -64,6 +68,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("email", email);
         context.setVariable("gatewayUrl", gatewayUrl);
+        context.setVariable("loginUrl", loginUrl);
 
         return templateEngine.process("mail", context);
     }
