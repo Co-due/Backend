@@ -3,10 +3,11 @@ package soma.edupi.user.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
-@Builder
+@Getter
+@NoArgsConstructor
 public class MemberLoginRequest {
 
     @NotNull
@@ -17,4 +18,9 @@ public class MemberLoginRequest {
     @NotBlank
     private String password;
 
+    @Builder
+    public MemberLoginRequest(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }

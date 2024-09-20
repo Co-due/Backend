@@ -20,6 +20,7 @@ import soma.edupi.user.dto.request.MemberLoginRequest;
 import soma.edupi.user.dto.request.SignupRequest;
 import soma.edupi.user.dto.response.SignupResponse;
 import soma.edupi.user.exception.DbValidException;
+import soma.edupi.user.service.EmailService;
 import soma.edupi.user.service.MemberService;
 
 @WebMvcTest(MemberController.class)
@@ -27,6 +28,9 @@ class MemberControllerTest {
 
     @MockBean
     MemberService memberService;
+
+    @MockBean
+    EmailService emailService;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -50,7 +54,6 @@ class MemberControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isOk())
             .andExpect(cookie().exists("token"));
-
     }
 
     @Test
