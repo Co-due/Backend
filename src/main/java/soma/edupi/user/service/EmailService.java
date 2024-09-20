@@ -12,6 +12,8 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import soma.edupi.user.client.MemberApiClient;
+import soma.edupi.user.dto.request.EmailRequest;
 
 @Slf4j
 @Service
@@ -23,6 +25,7 @@ public class EmailService {
     private String gatewayUrl;
 
     private final JavaMailSender emailSender;
+    private final MemberApiClient memberApiClient;
 
 
     @Async
@@ -33,10 +36,8 @@ public class EmailService {
         emailSender.send(emailForm);
     }
 
-    public boolean verifyEmailCode(String email) {
-        // TODO: DB의 account 활성화
-
-        return true;
+    public void activateAccount(EmailRequest emailRequest) {
+        memberApiClient.activate(emailRequest);
     }
 
     private MimeMessage createEmailForm(String toEmail) throws MessagingException {
