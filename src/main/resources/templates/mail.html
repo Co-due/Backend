@@ -5,17 +5,13 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script type="text/javascript">
     function confirmMail() {
-      let email = [[${email}]];
-      let gatewayUrl = [[${gatewayUrl}]];
+      let baseUrl = [[${baseUrl}]];
+      let param = "email=" + [[${email}]];
 
       $.ajax({
-        url: gatewayUrl + "v1/email/verify",
-        type: "post",
-        dataType: "json",
-        data: {"email": email},
-        success: function (response) {
-          console.log("Success:", response);
-        },
+        url: baseUrl + "/auth/email?" + param,
+        type: "get",
+        dataType: "text",
       });
     }
   </script>

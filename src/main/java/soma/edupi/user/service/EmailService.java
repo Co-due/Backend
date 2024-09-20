@@ -21,11 +21,8 @@ import soma.edupi.user.dto.request.EmailRequest;
 public class EmailService {
 
 
-    @Value("${server-url.gateway}")
-    private String gatewayUrl;
-
-    @Value("${site-url.login}")
-    private String loginUrl;
+    @Value("${site-url.base}")
+    private String baseUrl;
 
     private final JavaMailSender emailSender;
     private final MemberApiClient memberApiClient;
@@ -67,8 +64,8 @@ public class EmailService {
 
         Context context = new Context();
         context.setVariable("email", email);
-        context.setVariable("gatewayUrl", gatewayUrl);
-        context.setVariable("loginUrl", loginUrl);
+        context.setVariable("basicUrl", baseUrl);
+        context.setVariable("loginUrl", baseUrl + "/login");
 
         return templateEngine.process("mail", context);
     }
