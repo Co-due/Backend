@@ -31,7 +31,6 @@ public class EmailService {
     @Async
     public void sendEmail(String toEmail) throws MessagingException {
         MimeMessage emailForm = createEmailForm(toEmail);
-        // 이메일 발송
         emailSender.send(emailForm);
         log.info("MailService.sendEmail: toEmail: {}", toEmail);
 
@@ -50,7 +49,6 @@ public class EmailService {
         return message;
     }
 
-    // 이메일 내용 초기화
     private String setContext(String email) {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
