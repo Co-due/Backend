@@ -2,19 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script type="text/javascript">
-    function confirmMail() {
-      let baseUrl = [[${baseUrl}]];
-      let param = "email=" + [[${email}]];
-
-      $.ajax({
-        url: baseUrl + "/auth/email?" + param,
-        type: "get",
-        dataType: "text",
-      });
-    }
-  </script>
 </head>
 <body>
 <div
@@ -29,10 +16,9 @@
     감사합니다.
   </p>
   <div style="text-align: center;">
-    <a th:href="@{${loginUrl}}" onclick="confirmMail()"
+    <a th:href="@{${baseUrl + '/auth/email?email=' + email}}"
        style="color: #FFF; text-decoration: none; text-align: center;">
-      <p
-          style="display: inline-block; width: 210px; height: 45px; margin: 30px 5px 40px; background: #0056b3; line-height: 45px; vertical-align: middle; font-size: 16px;">
+      <p style="display: inline-block; width: 210px; height: 45px; margin: 30px 5px 40px; background: #0056b3; line-height: 45px; vertical-align: middle; font-size: 16px;">
         메일 인증
       </p>
     </a>

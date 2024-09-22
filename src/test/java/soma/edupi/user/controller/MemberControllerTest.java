@@ -67,7 +67,7 @@ class MemberControllerTest {
             .build();
 
         // Mocking
-        when(memberService.signUp(signupRequest)).thenReturn(
+        when(memberService.signup(signupRequest)).thenReturn(
             ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new SignupResponse("회원가입 성공"))
@@ -93,7 +93,7 @@ class MemberControllerTest {
             .build();
 
         // Mocking
-        when(memberService.signUp(signupRequest))
+        when(memberService.signup(signupRequest))
             .thenThrow(new DbValidException("Invalid email address"));
 
         // When & Then

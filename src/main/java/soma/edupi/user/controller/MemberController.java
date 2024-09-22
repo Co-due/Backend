@@ -55,7 +55,7 @@ public class MemberController implements MemberSpecification {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> createAccount(@Valid @RequestBody SignupRequest signupRequest)
         throws JsonProcessingException, MessagingException {
-        memberService.signUp(signupRequest);
+        memberService.signup(signupRequest);
         emailService.sendEmail(signupRequest.getEmail());
 
         return ResponseEntity.ok().build();

@@ -64,7 +64,7 @@ public class EmailService {
 
         Context context = new Context();
         context.setVariable("email", email);
-        context.setVariable("basicUrl", baseUrl);
+        context.setVariable("baseUrl", baseUrl);
         context.setVariable("loginUrl", baseUrl + "/login");
 
         return templateEngine.process("mail", context);
