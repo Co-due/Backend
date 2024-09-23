@@ -101,7 +101,7 @@ public class MemberServiceTest {
         when(memberRepository.saveMember(signupRequest)).thenReturn(responseEntity);
 
         // When
-        ResponseEntity<SignupResponse> result = memberService.signUp(signupRequest);
+        ResponseEntity<SignupResponse> result = memberService.signup(signupRequest);
 
         // Then
         Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
@@ -133,6 +133,6 @@ public class MemberServiceTest {
         when(objectMapper.readValue(errorResponse, ErrorResponse.class)).thenReturn(mockResponse);
 
         // When & Then
-        DbValidException thrown = assertThrows(DbValidException.class, () -> memberService.signUp(signupRequest));
+        DbValidException thrown = assertThrows(DbValidException.class, () -> memberService.signup(signupRequest));
     }
 }

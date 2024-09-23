@@ -34,7 +34,7 @@ public class MemberService {
         return tokenProvider.generateToken(findMember);
     }
 
-    public ResponseEntity<SignupResponse> signUp(SignupRequest signupRequest) throws JsonProcessingException {
+    public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) throws JsonProcessingException {
         try {
             // 회원가입 요청을 처리
             ResponseEntity<SignupResponse> responseEntity = memberApiClient.saveMember(signupRequest);
