@@ -17,14 +17,14 @@ import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
 
-@Tag(name = "Member", description = "Member API")
+@Tag(name = "Account", description = "Account API")
 public interface AccountOpenApi {
 
     @Operation(summary = "로그인", description = "아이디 패스워드를 받아서 토큰을 발급하는 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "토큰 발급에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
-    ResponseEntity<Void> login(@Valid @RequestBody AccountLoginRequest memberLoginRequest,
+    ResponseEntity<Void> login(@Valid @RequestBody AccountLoginRequest accountLoginRequest,
         HttpServletResponse response);
 
     @Operation(summary = "로그인", description = "발급받은 토큰의 정보를 조회하는 API ")

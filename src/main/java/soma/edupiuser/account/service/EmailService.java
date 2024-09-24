@@ -25,7 +25,7 @@ public class EmailService {
     private String baseUrl;
 
     private final JavaMailSender emailSender;
-    private final DbServerApiClient memberApiClient;
+    private final DbServerApiClient dbServerApiClient;
 
 
     @Async
@@ -37,7 +37,7 @@ public class EmailService {
     }
 
     public void activateAccount(EmailRequest emailRequest) {
-        memberApiClient.activate(emailRequest);
+        dbServerApiClient.activate(emailRequest);
     }
 
     private MimeMessage createEmailForm(String toEmail) throws MessagingException {

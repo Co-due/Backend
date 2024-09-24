@@ -11,9 +11,9 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.Role;
-import soma.edupiuser.account.models.TokenInfo;
 
 @Component
 public class TokenProvider {
@@ -27,15 +27,15 @@ public class TokenProvider {
         this.expiration = expiration;
     }
 
-    public String generateToken(Account member) {
+    public String generateToken(Account account) {
         long now = (new Date()).getTime();
         Date tokenExpiration = new Date(now + expiration);
 
         return Jwts.builder()
-            .claim("accountId", member.getId())
-            .claim("email", member.getEmail())
-            .claim("name", member.getName())
-            .claim("role", member.getRole())
+            .claim("accountId", account.getId())
+            .claim("email", account.getEmail())
+            .claim("name", account.getName())
+            .claim("role", account.getRole())
             .signWith(key, SIG.HS512)
             .expiration(tokenExpiration)
             .compact();

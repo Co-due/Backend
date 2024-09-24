@@ -53,7 +53,7 @@ class AccountApiClientTest {
 
     @Test
     @DisplayName("이메일과 비밀번호로 회원을 찾는 Http 요청 테스트")
-    void testFindMemberByEmailAndPassword() throws JsonProcessingException {
+    void testLogin() throws JsonProcessingException {
         Account expectedResponse = new Account(1L, "asdf@naver.com", "", "홍길동", Role.ROLE_USER);
 
         // mockWebServer 응답 설정

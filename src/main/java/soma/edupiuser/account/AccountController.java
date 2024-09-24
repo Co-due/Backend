@@ -65,7 +65,7 @@ public class AccountController implements AccountOpenApi {
     @PostMapping("/activate")
     public ResponseEntity<Void> activateAccount(@RequestBody EmailRequest emailRequest) {
         emailService.activateAccount(emailRequest);
-        log.info("Member: 이메일 인증 완료 {}", emailRequest.getEmail());
+        log.info("Account: 이메일 인증 완료 {}", emailRequest.getEmail());
 
         return ResponseEntity.ok().build();
     }

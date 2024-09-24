@@ -1,4 +1,4 @@
-package soma.edupi.user.config;
+package soma.edupiuser._config;
 
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;

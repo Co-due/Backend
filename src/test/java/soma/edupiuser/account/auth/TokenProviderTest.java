@@ -16,17 +16,17 @@ public class TokenProviderTest {
     @Autowired
     private TokenProvider tokenProvider;
 
-    private Account member;
+    private Account account;
 
     @BeforeEach
     void init() {
-        member = new Account("asdf@naver.com", "홍길동", Role.ROLE_USER);
+        account = new Account("asdf@naver.com", "홍길동", Role.ROLE_USER);
     }
 
     @Test
     @DisplayName("회원 정보를 받고 토큰 생성 확인")
     void generateToken() {
-        String token = tokenProvider.generateToken(member);
+        String token = tokenProvider.generateToken(account);
 
         Assertions.assertThat(token).isNotNull();
     }
@@ -34,12 +34,12 @@ public class TokenProviderTest {
     @Test
     @DisplayName("토큰 정보를 받고 회원 정보 반환")
     void findUserInfoBy() {
-        String token = tokenProvider.generateToken(member);
+        String token = tokenProvider.generateToken(account);
 
         TokenInfo tokenInfo = tokenProvider.findAccountInfoBy(token);
 
-        Assertions.assertThat(tokenInfo.getEmail()).isEqualTo(member.getEmail());
-        Assertions.assertThat(tokenInfo.getName()).isEqualTo(member.getName());
-        Assertions.assertThat(tokenInfo.getRole()).isEqualTo(member.getRole());
+        Assertions.assertThat(tokenInfo.getEmail()).isEqualTo(account.getEmail());
+        Assertions.assertThat(tokenInfo.getName()).isEqualTo(account.getName());
+        Assertions.assertThat(tokenInfo.getRole()).isEqualTo(account.getRole());
     }
 }
