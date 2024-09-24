@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
-import soma.edupiuser.account.service.domain.Role;
+import soma.edupiuser.account.service.domain.AccountRole;
 
 @SpringBootTest
 public class TokenProviderTest {
@@ -20,7 +20,7 @@ public class TokenProviderTest {
 
     @BeforeEach
     void init() {
-        account = new Account("asdf@naver.com", "홍길동", Role.ROLE_USER);
+        account = new Account("asdf@naver.com", "홍길동", AccountRole.USER);
     }
 
     @Test
@@ -40,6 +40,6 @@ public class TokenProviderTest {
 
         Assertions.assertThat(tokenInfo.getEmail()).isEqualTo(account.getEmail());
         Assertions.assertThat(tokenInfo.getName()).isEqualTo(account.getName());
-        Assertions.assertThat(tokenInfo.getRole()).isEqualTo(account.getRole());
+        Assertions.assertThat(tokenInfo.getAccountRole()).isEqualTo(account.getAccountRole());
     }
 }

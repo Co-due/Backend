@@ -21,7 +21,7 @@ import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.domain.Account;
-import soma.edupiuser.account.service.domain.Role;
+import soma.edupiuser.account.service.domain.AccountRole;
 
 @SpringBootTest
 @Import(DbServerApiRestClientConfig.class)
@@ -54,7 +54,7 @@ class AccountApiClientTest {
     @Test
     @DisplayName("이메일과 비밀번호로 회원을 찾는 Http 요청 테스트")
     void testLogin() throws JsonProcessingException {
-        Account expectedResponse = new Account(1L, "asdf@naver.com", "", "홍길동", Role.ROLE_USER);
+        Account expectedResponse = new Account(1L, "asdf@naver.com", "", "홍길동", AccountRole.USER);
 
         // mockWebServer 응답 설정
         mockWebServer.enqueue(new MockResponse()

@@ -23,7 +23,7 @@ import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.domain.Account;
-import soma.edupiuser.account.service.domain.Role;
+import soma.edupiuser.account.service.domain.AccountRole;
 import soma.edupiuser.web.exception.DbValidException;
 import soma.edupiuser.web.models.ErrorResponse;
 
@@ -58,7 +58,7 @@ public class AccountServiceTest {
     @DisplayName("아이디와 패스워드에 맞는 멤버가 있으면 token을 반환한다.")
     void accountLogin() {
 
-        Account expectedAccount = new Account("asdf@naver.com", "홍길동", Role.ROLE_USER);
+        Account expectedAccount = new Account("asdf@naver.com", "홍길동", AccountRole.USER);
 
         String expectedToken = "token";
 

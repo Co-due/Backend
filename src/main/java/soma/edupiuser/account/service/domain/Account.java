@@ -12,20 +12,20 @@ public class Account {
     private String password;
     private String email;
     private String name;
-    private Role role;
+    private AccountRole accountRole;
 
-    public Account(Long id, String email, String password, String name, Role role) {
+    public Account(Long id, String email, String password, String name, AccountRole accountRole) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
-        this.role = role;
+        this.accountRole = accountRole;
     }
 
-    public Account(String email, String name, Role role) {
+    public Account(String email, String name, AccountRole accountRole) {
         this.email = email;
         this.name = name;
-        this.role = role;
+        this.accountRole = accountRole;
     }
 
 }

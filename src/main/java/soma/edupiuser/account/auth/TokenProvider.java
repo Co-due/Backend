@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
-import soma.edupiuser.account.service.domain.Role;
+import soma.edupiuser.account.service.domain.AccountRole;
 
 @Component
 public class TokenProvider {
@@ -35,7 +35,7 @@ public class TokenProvider {
             .claim("accountId", account.getId())
             .claim("email", account.getEmail())
             .claim("name", account.getName())
-            .claim("role", account.getRole())
+            .claim("accountRole", account.getAccountRole())
             .signWith(key, SIG.HS512)
             .expiration(tokenExpiration)
             .compact();
@@ -49,7 +49,7 @@ public class TokenProvider {
         return TokenInfo.builder()
             .email(claims.get("email", String.class))
             .name(claims.get("name", String.class))
-            .role(Role.valueOf(claims.get("role", String.class)))
+            .accountRole(AccountRole.valueOf(claims.get("accountRole", String.class)))
             .build();
     }
 
