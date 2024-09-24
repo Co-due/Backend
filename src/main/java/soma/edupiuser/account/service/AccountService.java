@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import soma.edupiuser.account.auth.TokenProvider;
 import soma.edupiuser.account.client.DbServerApiClient;
-import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
-import soma.edupiuser.web.models.ErrorResponse;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
+import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.web.exception.DbValidException;
 import soma.edupiuser.web.exception.InnerServerException;
+import soma.edupiuser.web.models.ErrorResponse;
 
 @Service
 @Slf4j
@@ -66,7 +66,7 @@ public class AccountService {
     }
 
     public TokenInfo findAccountInfo(String token) {
-        return tokenProvider.findAccountInfoBy(token);
+        return tokenProvider.findAccountInfo(token);
     }
 
 }

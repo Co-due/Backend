@@ -41,7 +41,7 @@ public class TokenProvider {
             .compact();
     }
 
-    public TokenInfo findAccountInfoBy(String token) {
+    public TokenInfo findAccountInfo(String token) {
         Claims claims = getClaims(token);
 
         isTokenExpired(claims); // 토큰이 유효한지 검사

@@ -36,7 +36,7 @@ public class TokenProviderTest {
     void findUserInfoBy() {
         String token = tokenProvider.generateToken(account);
 
-        TokenInfo tokenInfo = tokenProvider.findAccountInfoBy(token);
+        TokenInfo tokenInfo = tokenProvider.findAccountInfo(token);
 
         Assertions.assertThat(tokenInfo.getEmail()).isEqualTo(account.getEmail());
         Assertions.assertThat(tokenInfo.getName()).isEqualTo(account.getName());
