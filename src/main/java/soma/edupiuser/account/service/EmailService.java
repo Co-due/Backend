@@ -12,7 +12,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import soma.edupiuser.account.client.DbServerApiClient;
+import soma.edupiuser.account.client.MetaServerApiClient;
 import soma.edupiuser.account.models.EmailRequest;
 
 @Slf4j
@@ -25,7 +25,7 @@ public class EmailService {
     private String baseUrl;
 
     private final JavaMailSender emailSender;
-    private final DbServerApiClient dbServerApiClient;
+    private final MetaServerApiClient metaServerApiClient;
 
 
     @Async
@@ -37,7 +37,7 @@ public class EmailService {
     }
 
     public void activateAccount(EmailRequest emailRequest) {
-        dbServerApiClient.activate(emailRequest);
+        metaServerApiClient.activate(emailRequest);
     }
 
     private MimeMessage createEmailForm(String toEmail) throws MessagingException {

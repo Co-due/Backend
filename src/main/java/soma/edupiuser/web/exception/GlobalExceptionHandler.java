@@ -31,8 +31,8 @@ public class GlobalExceptionHandler {
             .body(errors);
     }
 
-    @ExceptionHandler(DbValidException.class)    // DB 로직 실패에 대한 예외 처리
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(DbValidException ex) {
+    @ExceptionHandler(MetaValidException.class)    // DB 로직 실패에 대한 예외 처리
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MetaValidException ex) {
         ErrorResponse errors = new ErrorResponse(ex.getMessage());
 
         return ResponseEntity

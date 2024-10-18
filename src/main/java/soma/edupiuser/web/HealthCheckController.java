@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Health Check", description = "Health Check API")
 public class HealthCheckController {
 
-    @GetMapping("/")
+    @GetMapping("/health-check")
     @Operation(summary = "헬스 체크")
     public String healthCheck() {
         return "OK";

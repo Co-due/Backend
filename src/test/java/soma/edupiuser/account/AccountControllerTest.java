@@ -21,7 +21,7 @@ import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.AccountService;
 import soma.edupiuser.account.service.EmailService;
-import soma.edupiuser.web.exception.DbValidException;
+import soma.edupiuser.web.exception.MetaValidException;
 
 @WebMvcTest(AccountController.class)
 class AccountControllerTest {
@@ -94,7 +94,7 @@ class AccountControllerTest {
 
         // Mocking
         when(accountService.signup(signupRequest))
-            .thenThrow(new DbValidException("Invalid email address"));
+            .thenThrow(new MetaValidException("Invalid email address"));
 
         // When & Then
         mockMvc.perform(post("/v1/account/signup")
