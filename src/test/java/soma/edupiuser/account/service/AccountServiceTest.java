@@ -133,6 +133,6 @@ public class AccountServiceTest {
         when(objectMapper.readValue(errorResponse, ErrorResponse.class)).thenReturn(mockResponse);
 
         // When & Then
-        MetaValidException thrown = assertThrows(MetaValidException.class, () -> accountService.signup(signupRequest));
+        assertThrows(MetaValidException.class, () -> accountService.signup(signupRequest));
     }
 }
