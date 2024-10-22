@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import soma.edupiuser.account.client.DbServerApiClient;
 import soma.edupiuser.oauth.exception.OAuth2AuthenticationProcessingException;
 import soma.edupiuser.oauth.models.OAuth2UserInfo;
 import soma.edupiuser.oauth.models.OAuth2UserInfoFactory;
@@ -20,14 +19,15 @@ import soma.edupiuser.oauth.models.OAuth2UserInfoFactory;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final DbServerApiClient dbServerApiClient;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
+        log.info("loadUser 도착");
         // 액세스 토큰을 지급받았을 때
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
 
         try {
+            log.info("loadUser 끝");
             return processOAuth2User(oAuth2UserRequest, oAuth2User);
         } catch (AuthenticationException ex) {
             throw ex;
@@ -38,7 +38,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
-
+        log.info("processOAuth2User 도착");
         String registrationId = userRequest.getClientRegistration()
             .getRegistrationId();
 
@@ -52,7 +52,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (!StringUtils.hasText(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
-
+        log.info("processOAuth2User 끝");
         return new OAuth2UserPrincipal(oAuth2UserInfo);
     }
 

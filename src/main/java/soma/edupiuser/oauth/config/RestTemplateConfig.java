@@ -1,4 +1,4 @@
-package soma.edupiuser._config;
+package soma.edupiuser.oauth.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
