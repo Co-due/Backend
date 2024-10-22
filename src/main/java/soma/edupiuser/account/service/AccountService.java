@@ -9,14 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import soma.edupiuser.account.auth.TokenProvider;
-import soma.edupiuser.account.client.DbServerApiClient;
+import soma.edupiuser.account.client.MetaServerApiClient;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
-import soma.edupiuser.web.exception.DbValidException;
 import soma.edupiuser.web.exception.InnerServerException;
+import soma.edupiuser.web.exception.MetaValidException;
 import soma.edupiuser.web.models.ErrorResponse;
 
 @Service
@@ -24,12 +24,12 @@ import soma.edupiuser.web.models.ErrorResponse;
 @RequiredArgsConstructor
 public class AccountService {
 
-    private final DbServerApiClient dbServerApiClient;
+    private final MetaServerApiClient metaServerApiClient;
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
 
     public String login(AccountLoginRequest accountLoginRequest) {
-        Account findAccount = dbServerApiClient.login(accountLoginRequest);
+        Account findAccount = metaServerApiClient.login(accountLoginRequest);
 
         return tokenProvider.generateToken(findAccount);
     }
@@ -37,7 +37,7 @@ public class AccountService {
     public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) throws JsonProcessingException {
         try {
             // 회원가입 요청을 처리
-            ResponseEntity<SignupResponse> responseEntity = dbServerApiClient.saveAccount(signupRequest);
+            ResponseEntity<SignupResponse> responseEntity = metaServerApiClient.saveAccount(signupRequest);
 
             return ResponseEntity
                 .status(HttpStatus.OK)
@@ -55,7 +55,7 @@ public class AccountService {
         ErrorResponse response = objectMapper.readValue(e.getResponseBodyAsString(), ErrorResponse.class);
 
         if (e.getStatusCode().is4xxClientError()) {
-            throw new DbValidException(response.getMessage());
+            throw new MetaValidException(response.getMessage());
 
         } else if (e.getStatusCode().is5xxServerError()) {
             throw new InnerServerException(response.getMessage());

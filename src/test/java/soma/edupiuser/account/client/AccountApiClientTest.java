@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import soma.edupiuser.account.client.config.DbServerApiRestClientConfig;
+import soma.edupiuser.account.client.config.MetaServerApiRestClientConfig;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
@@ -24,23 +24,23 @@ import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
 
 @SpringBootTest
-@Import(DbServerApiRestClientConfig.class)
+@Import(MetaServerApiRestClientConfig.class)
 class AccountApiClientTest {
 
     @Autowired
     private ObjectMapper mapper;
 
     private MockWebServer mockWebServer;
-    private DbServerApiClient dbServerApiClient;
+    private MetaServerApiClient metaServerApiClient;
 
     @BeforeEach
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
-        // dbApiClient에 mockWebServer를 적용해 테스트
-        DbServerApiRestClientConfig config = new DbServerApiRestClientConfig();
-        dbServerApiClient = config.dbServerApiClient(
+        // metaApiClient에 mockWebServer를 적용해 테스트
+        MetaServerApiRestClientConfig config = new MetaServerApiRestClientConfig();
+        metaServerApiClient = config.meatServerApiClient(
             mockWebServer.url("/").toString());
     }
 
@@ -65,7 +65,7 @@ class AccountApiClientTest {
             .email("asdf@naver.com")
             .password("password").build();
 
-        Account result = dbServerApiClient.login(request);
+        Account result = metaServerApiClient.login(request);
 
         Assertions.assertThat(result.getEmail()).isEqualTo(expectedResponse.getEmail());
         Assertions.assertThat(result.getName()).isEqualTo(expectedResponse.getName());
@@ -88,7 +88,7 @@ class AccountApiClientTest {
             .password("qpwoeiruty00@")
             .build();
 
-        ResponseEntity<SignupResponse> result = dbServerApiClient.saveAccount(signupRequest);
+        ResponseEntity<SignupResponse> result = metaServerApiClient.saveAccount(signupRequest);
 
         // Then
         Assertions.assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);

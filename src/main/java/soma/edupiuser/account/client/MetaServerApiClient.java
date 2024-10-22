@@ -13,7 +13,7 @@ import soma.edupiuser.account.service.domain.Account;
 
 @Component
 @HttpExchange("/v1/account")
-public interface DbServerApiClient {
+public interface MetaServerApiClient {
 
     @PostExchange("/login")
     Account login(@RequestBody AccountLoginRequest accountLoginRequest);

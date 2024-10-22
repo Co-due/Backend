@@ -18,13 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import soma.edupiuser.account.auth.TokenProvider;
-import soma.edupiuser.account.client.DbServerApiClient;
+import soma.edupiuser.account.client.MetaServerApiClient;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
-import soma.edupiuser.web.exception.DbValidException;
+import soma.edupiuser.web.exception.MetaValidException;
 import soma.edupiuser.web.models.ErrorResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +34,7 @@ public class AccountServiceTest {
     private AccountService accountService;
 
     @Mock
-    private DbServerApiClient dbServerApiClient;
+    private MetaServerApiClient metaServerApiClient;
 
     @Mock
     private TokenProvider tokenProvider;
@@ -62,7 +62,7 @@ public class AccountServiceTest {
 
         String expectedToken = "token";
 
-        when(dbServerApiClient.login(accountLoginRequest)).thenReturn(
+        when(metaServerApiClient.login(accountLoginRequest)).thenReturn(
             expectedAccount);
         when(tokenProvider.generateToken(expectedAccount)).thenReturn(expectedToken);
 
@@ -75,7 +75,7 @@ public class AccountServiceTest {
     @DisplayName("아이디 패스워드에 맞는 멤버가 없으면 예외를 반환한다.")
     void AccountLoginException() {
 
-        when(dbServerApiClient.login(accountLoginRequest)).thenThrow(
+        when(metaServerApiClient.login(accountLoginRequest)).thenThrow(
             new IllegalArgumentException("아이디 비밀번호가 일치하지 않습니다.")
         );
 
@@ -98,7 +98,7 @@ public class AccountServiceTest {
             .status(HttpStatus.OK)
             .body(new SignupResponse("회원가입 성공"));
 
-        when(dbServerApiClient.saveAccount(signupRequest)).thenReturn(responseEntity);
+        when(metaServerApiClient.saveAccount(signupRequest)).thenReturn(responseEntity);
 
         // When
         ResponseEntity<SignupResponse> result = accountService.signup(signupRequest);
@@ -127,12 +127,12 @@ public class AccountServiceTest {
         when(exception.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
 
         // 예외를 던지도록 설정
-        when(dbServerApiClient.saveAccount(signupRequest)).thenThrow(exception);
+        when(metaServerApiClient.saveAccount(signupRequest)).thenThrow(exception);
 
         // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
         when(objectMapper.readValue(errorResponse, ErrorResponse.class)).thenReturn(mockResponse);
 
         // When & Then
-        DbValidException thrown = assertThrows(DbValidException.class, () -> accountService.signup(signupRequest));
+        assertThrows(MetaValidException.class, () -> accountService.signup(signupRequest));
     }
 }
