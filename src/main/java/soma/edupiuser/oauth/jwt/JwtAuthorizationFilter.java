@@ -6,12 +6,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -23,7 +25,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
-
+        log.info("JwtAuthorizationFilter 도착");
         String token = resolveToken(request);
 
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
@@ -35,6 +37,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest request) {
+        log.info("resolveToken 도착");
         String token = request.getHeader(AUTHORIZATION_HEADER);
 
         if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
