@@ -14,8 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
+import soma.edupiuser.account.client.DbServerApiClient;
 import soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import soma.edupiuser.oauth.models.OAuth2UserUnlinkManager;
+import soma.edupiuser.oauth.models.SignupOauthRequest;
 import soma.edupiuser.oauth.service.OAuth2UserPrincipal;
 import soma.edupiuser.oauth.utils.CookieUtils;
 
@@ -23,6 +25,8 @@ import soma.edupiuser.oauth.utils.CookieUtils;
 @RequiredArgsConstructor
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private final DbServerApiClient dbServerApiClient;
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
@@ -66,15 +70,20 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .build().toUriString();
         }
 
-        // TODO: DB 저장
-        // TODO: 액세스 토큰, 리프레시 토큰 발급
-        // TODO: 리프레시 토큰 DB 저장
+        String email = principal.getUserInfo().getEmail();
+        String name = principal.getUserInfo().getName();
 
-        log.info("email={}, name={}, nickname={}, accessToken={}", principal.getUserInfo().getEmail(),
-            principal.getUserInfo().getName(),
-            principal.getUserInfo().getNickname(),
-            principal.getUserInfo().getAccessToken()
-        );
+        if (dbServerApiClient.isExistsEmail(email)) {
+            // 회원가입
+            dbServerApiClient.saveAccountWithOauth(
+                SignupOauthRequest.builder()
+                    .email(email)
+                    .name(name)
+                    .build()
+            );
+        }
+
+        // TODO: 액세스 토큰
 
         String accessToken = "test_access_token";
         String refreshToken = "test_refresh_token";
