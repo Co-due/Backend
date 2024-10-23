@@ -39,6 +39,8 @@ public class AccountController implements AccountOpenApi {
         Cookie cookie = new Cookie("token", token);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setAttribute("SameSite", "None");
+        cookie.setSecure(true);
 
         response.addCookie(cookie);
 
