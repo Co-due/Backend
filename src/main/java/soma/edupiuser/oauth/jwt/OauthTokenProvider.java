@@ -74,7 +74,7 @@ public class OauthTokenProvider {
     public String createToken(Authentication authentication) {
 
         Date date = new Date();
-        Date expiryDate = new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME_IN_MILLISECONDS);
+        Date expiryDate = new Date(date.getTime() + 56);
 
         return Jwts.builder()
             .subject(authentication.getName())
