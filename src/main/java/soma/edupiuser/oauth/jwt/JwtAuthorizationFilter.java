@@ -25,7 +25,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
-        log.info("JwtAuthorizationFilter 도착");
+        log.info("=== JWT Filter 시작 ===");
+        log.info("Request URI: {}", request.getRequestURI());
         String token = resolveToken(request);
 
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {

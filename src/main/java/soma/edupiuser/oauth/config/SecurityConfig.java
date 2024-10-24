@@ -14,7 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import soma.edupiuser.oauth.handler.OAuth2AuthenticationFailureHandler;
 import soma.edupiuser.oauth.handler.OAuth2AuthenticationSuccessHandler;
@@ -45,8 +44,8 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers(antMatcher("/edupi_user/oauth2/**")).permitAll()
-                .requestMatchers(antMatcher("/edupi_user/v1/account/**")).permitAll()
+                .requestMatchers(antMatcher("/edupi-user/oauth2/**")).permitAll()
+                .requestMatchers(antMatcher("/edupi-user/v1/account/**")).permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(sessions -> sessions
@@ -63,8 +62,7 @@ public class SecurityConfig {
                         .successHandler(oAuth2AuthenticationSuccessHandler) // 인증 성공 시 처리
                         .failureHandler(oAuth2AuthenticationFailureHandler) //  인증 실패 시 처리
             );
-
-        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
