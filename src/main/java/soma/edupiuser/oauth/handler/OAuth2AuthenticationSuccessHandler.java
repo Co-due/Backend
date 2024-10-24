@@ -13,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
+import soma.edupiuser.account.auth.TokenProvider;
 import soma.edupiuser.account.client.DbServerApiClient;
+import soma.edupiuser.account.models.EmailRequest;
+import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import soma.edupiuser.oauth.models.OAuth2UserUnlinkManager;
 import soma.edupiuser.oauth.models.SignupOauthRequest;
@@ -27,6 +29,7 @@ import soma.edupiuser.oauth.utils.CookieUtils;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final DbServerApiClient dbServerApiClient;
+    private final TokenProvider tokenProvider;
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
@@ -35,27 +38,41 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
 
-        log.info("OAuth2AuthenticationSuccessHandler 도착");
-        String targetUrl;
+        log.info("=== OAuth2 Success Handler 시작 ===");
+        try {
+            Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue);
 
-        targetUrl = determineTargetUrl(request, response, authentication);
+            String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+            log.info("redirect url : " + targetUrl);
 
-        if (response.isCommitted()) {
-            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
-            return;
+            String accessToken = determineTargetUrl(request, response, authentication);
+
+            if (response.isCommitted()) {
+                logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+                return;
+            }
+
+            // 토큰을 쿠키에 추가
+            Cookie cookie = new Cookie("token", accessToken);
+            cookie.setHttpOnly(true); // JavaScript에서 접근 불가
+            cookie.setPath("/"); // 모든 경로에서 접근 가능
+            cookie.setMaxAge(60 * 60); // 1시간 유효
+
+            response.addCookie(cookie);
+
+            clearAuthenticationAttributes(request, response);
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+        } catch (Exception e) {
+            log.error("OAuth2 Success Handler 에러 발생", e);
+            throw e;
         }
 
-        clearAuthenticationAttributes(request, response);
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) {
-
-        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-            .map(Cookie::getValue);
-
-        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         String mode = CookieUtils.getCookie(request, MODE_PARAM_COOKIE_NAME)
             .map(Cookie::getValue)
@@ -63,17 +80,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
 
-        // 여기까지 유저 정보 넘어옴
-        if (principal == null) {
-            return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("error", "Login failed")
-                .build().toUriString();
-        }
-
         String email = principal.getUserInfo().getEmail();
         String name = principal.getUserInfo().getName();
 
-        if (dbServerApiClient.isExistsEmail(email)) {
+        if (!dbServerApiClient.isExistsEmail(email)) {
             // 회원가입
             dbServerApiClient.saveAccountWithOauth(
                 SignupOauthRequest.builder()
@@ -82,16 +92,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     .build()
             );
         }
+        // 로그인
+        Account account = dbServerApiClient.login(new EmailRequest(email));
 
-        // TODO: 액세스 토큰
-
-        String accessToken = "test_access_token";
-        String refreshToken = "test_refresh_token";
-
-        return UriComponentsBuilder.fromUriString(targetUrl)
-            .queryParam("access_token", accessToken)
-            .queryParam("refresh_token", refreshToken)
-            .build().toUriString();
+        return tokenProvider.generateToken(account);
 
 //        else if ("unlink".equalsIgnoreCase(mode)) {
 //

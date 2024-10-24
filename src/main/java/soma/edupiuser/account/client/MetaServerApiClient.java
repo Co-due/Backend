@@ -21,6 +21,9 @@ public interface MetaServerApiClient {
     @PostExchange("/login")
     Account login(@RequestBody AccountLoginRequest accountLoginRequest);
 
+    @PostExchange("/login/oauth")
+    Account login(@RequestBody EmailRequest emailRequest);
+
     @PostExchange("/signup")
     ResponseEntity<SignupResponse> saveAccount(@RequestBody SignupRequest signupRequest);
 
