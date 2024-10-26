@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import soma.edupiuser.account.auth.TokenProvider;
-import soma.edupiuser.account.client.DbServerApiClient;
 import soma.edupiuser.account.models.EmailRequest;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -22,13 +20,15 @@ import soma.edupiuser.oauth.models.OAuth2UserUnlinkManager;
 import soma.edupiuser.oauth.models.SignupOauthRequest;
 import soma.edupiuser.oauth.service.OAuth2UserPrincipal;
 import soma.edupiuser.oauth.utils.CookieUtils;
+import soma.edupiuser.web.auth.TokenProvider;
+import soma.edupiuser.web.client.MetaServerApiClient;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final DbServerApiClient dbServerApiClient;
+    private final MetaServerApiClient dbServerApiClient;
     private final TokenProvider tokenProvider;
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
@@ -97,22 +97,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         return tokenProvider.generateToken(account);
 
-//        else if ("unlink".equalsIgnoreCase(mode)) {
-//
-//            String accessToken = principal.getUserInfo().getAccessToken();
-//            OAuth2Provider provider = principal.getUserInfo().getProvider();
-//
-//            // TODO: DB 삭제
-//            // TODO: 리프레시 토큰 삭제
-//            oAuth2UserUnlinkManager.unlink(provider, accessToken);
-//
-//            return UriComponentsBuilder.fromUriString(targetUrl)
-//                .build().toUriString();
-//        }
-//
-//        return UriComponentsBuilder.fromUriString(targetUrl)
-//            .queryParam("error", "Login failed")
-//            .build().toUriString();
     }
 
     private OAuth2UserPrincipal getOAuth2UserPrincipal(Authentication authentication) {
