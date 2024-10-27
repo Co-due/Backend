@@ -2,7 +2,6 @@ package soma.edupiuser.web.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
 import io.jsonwebtoken.io.Decoders;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Component;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
+import soma.edupiuser.web.exception.AccountException;
+import soma.edupiuser.web.exception.ErrorEnum;
 
 @Component
 public class TokenProvider {
@@ -73,7 +74,7 @@ public class TokenProvider {
 
     private void isTokenExpired(Claims claims) {
         if (claims.getExpiration().before(new Date())) {
-            throw new JwtException("토큰이 만료되었습니다.");
+            throw new AccountException(ErrorEnum.TOKEN_EXPIRE);
         }
     }
 

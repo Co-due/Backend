@@ -1,4 +1,4 @@
-package soma.edupiuser.web.exception;
+package soma.edupiuser.web;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +9,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import soma.edupiuser.account.exception.MetaServerException;
+import soma.edupiuser.web.exception.AccountException;
+import soma.edupiuser.web.exception.ErrorEnum;
 import soma.edupiuser.web.models.ErrorResponse;
 
 @Slf4j
@@ -31,22 +34,24 @@ public class GlobalExceptionHandler {
             .body(errors);
     }
 
-    @ExceptionHandler(MetaValidException.class)    // DB 로직 실패에 대한 예외 처리
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MetaValidException ex) {
-        ErrorResponse errors = new ErrorResponse(ex.getMessage());
+
+    @ExceptionHandler(AccountException.class)
+    public ResponseEntity<ErrorResponse> handleServerException(AccountException exception) {
+        ErrorEnum errorEnum = exception.getErrorCode();
+
+        return ResponseEntity
+            .status(errorEnum.getHttpStatus())
+            .body(new ErrorResponse(errorEnum.getCode(), errorEnum.getDetail()));
+    }
+
+    @ExceptionHandler(MetaServerException.class)    // meta 로직 실패에 대한 예외 처리
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MetaServerException exception) {
+        ErrorEnum errorEnum = exception.getErrorCode();
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(errors);
+            .body(new ErrorResponse(errorEnum.getCode(), errorEnum.getDetail()));
+
     }
 
-    @ExceptionHandler(InnerServerException.class)    // 내부 서버 에러에 대한 예외 처리
-    public ResponseEntity<ErrorResponse> handleValidationExceptions() {
-        // 사용자 에러로 변경
-        ErrorResponse error = new ErrorResponse("잘못된 요청입니다. 다시 시도 해주세요.");
-
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(error);
-    }
 }

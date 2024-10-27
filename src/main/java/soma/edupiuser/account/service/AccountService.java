@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
@@ -15,9 +16,13 @@ import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
+<<<<<<< HEAD
 import soma.edupiuser.web.exception.InnerServerException;
 import soma.edupiuser.web.exception.MetaValidException;
 import soma.edupiuser.web.models.ErrorResponse;
+=======
+import soma.edupiuser.web.exception.ErrorEnum;
+>>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 
 @Service
 @Slf4j
@@ -44,6 +49,7 @@ public class AccountService {
                 .body(responseEntity.getBody());
 
         } catch (HttpClientErrorException e) {
+<<<<<<< HEAD
             handleHttpClientException(e);
         }
         // 헝성 예외를 던지기 때문에 이 부분은 도달하지 않음
@@ -62,6 +68,10 @@ public class AccountService {
 
         } else {
             throw new InnerServerException(e.getMessage());
+=======
+            log.error("signup exception {}", e.getResponseBodyAsString());
+            throw new MetaServerException(ErrorEnum.META_SERVER_EXCEPTION);
+>>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
         }
     }
 
