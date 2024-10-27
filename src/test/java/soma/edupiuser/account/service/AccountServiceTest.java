@@ -13,31 +13,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-<<<<<<< HEAD
-import org.springframework.web.client.HttpClientErrorException;
-<<<<<<< HEAD
-import soma.edupiuser.account.auth.TokenProvider;
-import soma.edupiuser.account.client.MetaServerApiClient;
-=======
->>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리)
-=======
->>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
-<<<<<<< HEAD
-import soma.edupiuser.web.exception.MetaValidException;
-=======
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
-<<<<<<< HEAD
-import soma.edupiuser.web.exception.DbValidException;
->>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리)
-import soma.edupiuser.web.models.ErrorResponse;
-=======
->>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest {
@@ -46,11 +28,7 @@ public class AccountServiceTest {
     private AccountService accountService;
 
     @Mock
-<<<<<<< HEAD
     private MetaServerApiClient metaServerApiClient;
-=======
-    private MetaServerApiClient dbServerApiClient;
->>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리)
 
     @Mock
     private TokenProvider tokenProvider;
@@ -122,36 +100,4 @@ public class AccountServiceTest {
         // Then
         Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
     }
-<<<<<<< HEAD
-
-    @Test
-    @DisplayName("회원가입 요청 중 client 에러 발생")
-    public void signUp_clientError() throws JsonProcessingException {
-        // Given
-        SignupRequest signupRequest = SignupRequest.builder()
-            .email("invalid-email@example.com")
-            .name("John Doe")
-            .password("validPassword123")
-            .build();
-
-        // JSON 문자열과 해당 문자열을 파싱한 결과 객체
-        String errorResponse = "{\"message\":\"Invalid request\"}";
-        ErrorResponse mockResponse = new ErrorResponse("Invalid request");
-
-        // HttpClientErrorException을 모킹하여 예외의 응답 본문이 JSON 문자열로 반환되도록 설정
-        HttpClientErrorException exception = mock(HttpClientErrorException.class);
-        when(exception.getResponseBodyAsString()).thenReturn(errorResponse);
-        when(exception.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
-
-        // 예외를 던지도록 설정
-        when(metaServerApiClient.saveAccount(signupRequest)).thenThrow(exception);
-
-        // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
-        when(objectMapper.readValue(errorResponse, ErrorResponse.class)).thenReturn(mockResponse);
-
-        // When & Then
-        assertThrows(MetaValidException.class, () -> accountService.signup(signupRequest));
-    }
-=======
->>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 }
