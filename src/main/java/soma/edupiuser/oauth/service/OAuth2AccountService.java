@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import soma.edupiuser.account.models.EmailRequest;
 import soma.edupiuser.account.service.domain.Account;
@@ -22,6 +23,14 @@ public class OAuth2AccountService {
     private final TokenProvider tokenProvider;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
 
+    public OAuth2UserPrincipal getOAuth2UserPrincipal(Authentication authentication) {
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof OAuth2UserPrincipal) {
+            return (OAuth2UserPrincipal) principal;
+        }
+        return null;
+    }
 
     public void handleLogin(OAuth2UserPrincipal principal, HttpServletResponse response) {
         String email = principal.getUserInfo().getEmail();
@@ -42,7 +51,10 @@ public class OAuth2AccountService {
     }
 
     public void handleUnlink(OAuth2UserPrincipal principal) {
-        log.info("handleUnlink");
+        if (principal == null) {
+            return;
+        }
+        log.info("handleUnlink - userInfo={}", principal.getUserInfo());
         String accessToken = principal.getUserInfo().getAccessToken();
         OAuth2Provider provider = principal.getUserInfo().getProvider();
         oAuth2UserUnlinkManager.unlink(provider, accessToken);
@@ -55,4 +67,6 @@ public class OAuth2AccountService {
         cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
     }
+
+
 }
