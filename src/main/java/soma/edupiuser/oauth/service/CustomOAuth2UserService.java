@@ -23,7 +23,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         log.info("loadUser 도착");
-        // 액세스 토큰을 지급받았을 때
+        // 액세스 토큰을 가지고 소셜 사용자 정보 요청
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
 
         try {

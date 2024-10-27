@@ -12,8 +12,8 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import soma.edupiuser.account.client.MetaServerApiClient;
 import soma.edupiuser.account.models.EmailRequest;
+import soma.edupiuser.web.client.MetaServerApiClient;
 
 @Slf4j
 @Service

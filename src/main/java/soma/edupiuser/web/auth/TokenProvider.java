@@ -1,4 +1,4 @@
-package soma.edupiuser.account.auth;
+package soma.edupiuser.web.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
