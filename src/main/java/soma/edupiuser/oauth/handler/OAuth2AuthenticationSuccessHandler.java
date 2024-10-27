@@ -70,11 +70,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             .map(Cookie::getValue)
             .orElse("");
 
-        if ("login".equalsIgnoreCase(mode)) {
-            oAuth2AccountService.handleLogin(principal, response);
-
-        } else if ("unlink".equalsIgnoreCase(mode)) {
+        if ("unlink".equalsIgnoreCase(mode)) {
             oAuth2AccountService.handleUnlink(principal);
+        } else {
+            oAuth2AccountService.handleLogin(principal, response);
         }
     }
 
