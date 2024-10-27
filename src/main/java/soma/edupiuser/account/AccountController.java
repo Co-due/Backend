@@ -21,7 +21,6 @@ import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.AccountService;
 import soma.edupiuser.account.service.EmailService;
-import soma.edupiuser.oauth.service.OAuth2AccountService;
 
 @Slf4j
 @RestController
@@ -31,7 +30,6 @@ public class AccountController implements AccountOpenApi {
 
     private final EmailService emailService;
     private final AccountService accountService;
-    private final OAuth2AccountService oAuth2AccountService;
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(@Valid @RequestBody AccountLoginRequest accountLoginRequest,

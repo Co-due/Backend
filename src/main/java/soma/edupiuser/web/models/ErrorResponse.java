@@ -1,15 +1,20 @@
 package soma.edupiuser.web.models;
 
+import java.util.Collections;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class ErrorResponse {
 
-    String message;
+    private final String code;
+    private final String detail;
+    private Object result = Collections.EMPTY_MAP;
 
-    public ErrorResponse(String message) {
-        this.message = message;
+    public ErrorResponse(String code, String detail, Object result) {
+        this.code = code;
+        this.detail = detail;
+        this.result = result;
     }
 }

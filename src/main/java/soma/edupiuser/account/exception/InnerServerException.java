@@ -1,4 +1,4 @@
-package soma.edupiuser.web.exception;
+package soma.edupiuser.account.exception;
 
 public class InnerServerException extends RuntimeException {
 
