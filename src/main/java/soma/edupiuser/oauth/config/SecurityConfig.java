@@ -40,6 +40,10 @@ public class SecurityConfig {
                 HeadersConfigurer.FrameOptionsConfig::disable)) // For H2 DB
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers(antMatcher("/v1/account/**")).permitAll()
+                .anyRequest().authenticated()
+            )
             .sessionManagement(sessions -> sessions
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .oauth2Login(configure ->
