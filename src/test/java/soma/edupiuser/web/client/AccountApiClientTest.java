@@ -1,4 +1,4 @@
-package soma.edupiuser.account.client;
+package soma.edupiuser.web.client;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,12 +16,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+<<<<<<< HEAD:src/test/java/soma/edupiuser/account/client/AccountApiClientTest.java
 import soma.edupiuser.account.client.config.MetaServerApiRestClientConfig;
+=======
+>>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리):src/test/java/soma/edupiuser/web/client/AccountApiClientTest.java
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
+import soma.edupiuser.web.client.config.MetaServerApiRestClientConfig;
 
 @SpringBootTest
 @Import(MetaServerApiRestClientConfig.class)
@@ -31,16 +35,26 @@ class AccountApiClientTest {
     private ObjectMapper mapper;
 
     private MockWebServer mockWebServer;
+<<<<<<< HEAD:src/test/java/soma/edupiuser/account/client/AccountApiClientTest.java
     private MetaServerApiClient metaServerApiClient;
+=======
+    private MetaServerApiClient dbServerApiClient;
+>>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리):src/test/java/soma/edupiuser/web/client/AccountApiClientTest.java
 
     @BeforeEach
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
+<<<<<<< HEAD:src/test/java/soma/edupiuser/account/client/AccountApiClientTest.java
         // metaApiClient에 mockWebServer를 적용해 테스트
         MetaServerApiRestClientConfig config = new MetaServerApiRestClientConfig();
         metaServerApiClient = config.meatServerApiClient(
+=======
+        // dbApiClient에 mockWebServer를 적용해 테스트
+        MetaServerApiRestClientConfig config = new MetaServerApiRestClientConfig();
+        dbServerApiClient = config.dbServerApiClient(
+>>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리):src/test/java/soma/edupiuser/web/client/AccountApiClientTest.java
             mockWebServer.url("/").toString());
     }
 

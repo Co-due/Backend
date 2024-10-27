@@ -1,4 +1,4 @@
-package soma.edupiuser.account.client;
+package soma.edupiuser.web.client;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
