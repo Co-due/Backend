@@ -31,7 +31,7 @@ public class AccountService {
             return tokenProvider.generateToken(findAccount);
 
         } catch (HttpClientErrorException e) {
-            log.error("signup exception {}", e.getResponseBodyAsString());
+            log.error("login exception {}", e.getResponseBodyAsString());
             throw new MetaServerException(ErrorEnum.INVALID_ACCOUNT);
         }
     }
