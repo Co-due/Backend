@@ -1,4 +1,4 @@
-package soma.edupiuser.account.auth;
+package soma.edupiuser.web.auth;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

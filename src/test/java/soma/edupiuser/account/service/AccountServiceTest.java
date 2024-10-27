@@ -17,14 +17,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+<<<<<<< HEAD
 import soma.edupiuser.account.auth.TokenProvider;
 import soma.edupiuser.account.client.MetaServerApiClient;
+=======
+>>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리)
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
+<<<<<<< HEAD
 import soma.edupiuser.web.exception.MetaValidException;
+=======
+import soma.edupiuser.web.auth.TokenProvider;
+import soma.edupiuser.web.client.MetaServerApiClient;
+import soma.edupiuser.web.exception.DbValidException;
+>>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리)
 import soma.edupiuser.web.models.ErrorResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +43,11 @@ public class AccountServiceTest {
     private AccountService accountService;
 
     @Mock
+<<<<<<< HEAD
     private MetaServerApiClient metaServerApiClient;
+=======
+    private MetaServerApiClient dbServerApiClient;
+>>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리)
 
     @Mock
     private TokenProvider tokenProvider;
