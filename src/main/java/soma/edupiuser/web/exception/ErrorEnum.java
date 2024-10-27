@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorEnum {
     // 400
     TOKEN_EXPIRE(HttpStatus.BAD_REQUEST, "AC-400001", "토큰이 만료되었습니다."),
+    INVALID_ACCOUNT(HttpStatus.BAD_REQUEST, "AC-400002", "아이디 또는 비밀번호가 틀렸습니다."),
 
     META_SERVER_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "AC-500001", "Meta server Exception"),
 
