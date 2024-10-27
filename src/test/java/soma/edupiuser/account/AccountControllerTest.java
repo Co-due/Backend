@@ -23,11 +23,7 @@ import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.AccountService;
 import soma.edupiuser.account.service.EmailService;
-<<<<<<< HEAD
-import soma.edupiuser.web.exception.MetaValidException;
-=======
 import soma.edupiuser.web.exception.ErrorEnum;
->>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 
 @WebMvcTest(AccountController.class)
 @AutoConfigureMockMvc(addFilters = false)   // Spring Security 필터 비활성화
@@ -102,11 +98,7 @@ class AccountControllerTest {
 
         // Mocking
         when(accountService.signup(signupRequest))
-<<<<<<< HEAD
-            .thenThrow(new MetaValidException("Invalid email address"));
-=======
             .thenThrow(new MetaServerException(ErrorEnum.META_SERVER_EXCEPTION));
->>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 
         // When & Then
         mockMvc.perform(post("/v1/account/signup")
