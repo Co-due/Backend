@@ -1,10 +1,7 @@
 package soma.edupiuser.account.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +13,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+<<<<<<< HEAD
 import org.springframework.web.client.HttpClientErrorException;
 <<<<<<< HEAD
 import soma.edupiuser.account.auth.TokenProvider;
 import soma.edupiuser.account.client.MetaServerApiClient;
 =======
 >>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리)
+=======
+>>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
@@ -32,9 +32,12 @@ import soma.edupiuser.web.exception.MetaValidException;
 =======
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
+<<<<<<< HEAD
 import soma.edupiuser.web.exception.DbValidException;
 >>>>>>> 8d65b35 ([#48]fiix: handler 함수 분리)
 import soma.edupiuser.web.models.ErrorResponse;
+=======
+>>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest {
@@ -119,6 +122,7 @@ public class AccountServiceTest {
         // Then
         Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
     }
+<<<<<<< HEAD
 
     @Test
     @DisplayName("회원가입 요청 중 client 에러 발생")
@@ -148,4 +152,6 @@ public class AccountServiceTest {
         // When & Then
         assertThrows(MetaValidException.class, () -> accountService.signup(signupRequest));
     }
+=======
+>>>>>>> 85e1c7b ([#48]feat: 토큰 만료 예외, 예외 구조 추가)
 }
