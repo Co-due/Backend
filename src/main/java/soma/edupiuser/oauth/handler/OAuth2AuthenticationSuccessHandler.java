@@ -34,7 +34,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
                 .orElse(getDefaultTargetUrl());
-            OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
+            OAuth2UserPrincipal principal = oAuth2AccountService.getOAuth2UserPrincipal(authentication);
 
             if (principal == null) {
                 redirectWithError(request, response, targetUrl);
@@ -76,15 +76,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         } else if ("unlink".equalsIgnoreCase(mode)) {
             oAuth2AccountService.handleUnlink(principal);
         }
-    }
-
-    private OAuth2UserPrincipal getOAuth2UserPrincipal(Authentication authentication) {
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof OAuth2UserPrincipal) {
-            return (OAuth2UserPrincipal) principal;
-        }
-        return null;
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
