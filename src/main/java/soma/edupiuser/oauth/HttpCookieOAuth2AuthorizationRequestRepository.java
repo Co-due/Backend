@@ -42,7 +42,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
             return;
         }
 
-        log.info("All parameters: {}", request.getParameterMap());
         // ParameterMap의 모든 내용을 출력
         Map<String, String[]> parameterMap = request.getParameterMap();
         parameterMap.forEach((key, value) -> {
