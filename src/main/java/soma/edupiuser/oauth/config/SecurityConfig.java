@@ -44,17 +44,15 @@ public class SecurityConfig {
                 .requestMatchers(antMatcher("/v1/account/**")).permitAll()
                 .anyRequest().authenticated()
             )
-            .sessionManagement(sessions -> sessions
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .oauth2Login(configure ->
-                    configure
-                        .authorizationEndpoint(config -> {
-//                        config.baseUri("/oauth2/authorization");
-                            config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository);
-                        })
-                        .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
-                        .successHandler(oAuth2AuthenticationSuccessHandler) // 인증 성공 시 처리
-                        .failureHandler(oAuth2AuthenticationFailureHandler) //  인증 실패 시 처리
+                configure
+                    .authorizationEndpoint(config -> {
+                        config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository);
+                    })
+                    .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
+                    .successHandler(oAuth2AuthenticationSuccessHandler) // 인증 성공 시 처리
+                    .failureHandler(oAuth2AuthenticationFailureHandler) //  인증 실패 시 처리
             );
 
         return http.build();
