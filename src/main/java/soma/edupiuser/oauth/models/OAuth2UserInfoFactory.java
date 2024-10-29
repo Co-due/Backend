@@ -13,6 +13,8 @@ public class OAuth2UserInfoFactory {
         log.info("OAuth2UserInfoFactory 도착");
         if (OAuth2Provider.GOOGLE.getRegistrationId().equals(registrationId)) {
             return new GoogleOAuth2UserInfo(accessToken, attributes);
+        } else if (OAuth2Provider.NAVER.getRegistrationId().equals(registrationId)) {
+            return new NaverOAuth2UserInfo(accessToken, attributes);
         } else {
             throw new OAuth2AuthenticationProcessingException("Login with " + registrationId + " is not supported");
         }
