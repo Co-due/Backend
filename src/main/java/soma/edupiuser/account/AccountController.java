@@ -3,11 +3,15 @@ package soma.edupiuser.account;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.EmailRequest;
+import soma.edupiuser.account.models.LogoutResponse;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
@@ -44,14 +49,18 @@ public class AccountController implements AccountOpenApi {
 
         response.addCookie(cookie);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .build();
     }
 
     @GetMapping("/login/info")
     public ResponseEntity<TokenInfo> loginInfo(@CookieValue("token") String token) {
         TokenInfo tokenInfo = accountService.findAccountInfo(token);
 
-        return ResponseEntity.ok(tokenInfo);
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(tokenInfo);
     }
 
     @PostMapping("/signup")
@@ -60,7 +69,9 @@ public class AccountController implements AccountOpenApi {
         accountService.signup(signupRequest);
         emailService.sendEmail(signupRequest.getEmail());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .build();
     }
 
     // 이메일 인증
@@ -69,18 +80,24 @@ public class AccountController implements AccountOpenApi {
         emailService.activateAccount(emailRequest);
         log.info("Account: 이메일 인증 완료 {}", emailRequest.getEmail());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .build();
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
+    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = new Cookie("token", null);
         cookie.setPath("/");
         cookie.setMaxAge(0);
 
         response.addCookie(cookie);
 
-        return ResponseEntity.ok().build();
+        String provider = Optional.ofNullable(request.getParameter("provider")).orElse("");
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(new LogoutResponse(StringUtils.hasText(provider), provider));
     }
 
 }

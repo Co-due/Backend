@@ -46,8 +46,11 @@ public class OAuth2AccountService {
 
         log.info("handleLogin - login, email={}", email);
         Account account = metaServerApiClient.login(new EmailRequest(email));
-        String accessToken = tokenProvider.generateToken(account);
-        addAccessTokenToCookie(response, accessToken);
+        String token = tokenProvider.generateToken(account);
+        String provider = principal.getUserInfo().getProvider().name();
+
+        addCookie(response, "token", token);
+        addCookie(response, "provider", provider);
     }
 
     public void handleUnlink(OAuth2UserPrincipal principal) {
@@ -60,8 +63,8 @@ public class OAuth2AccountService {
         oAuth2UserUnlinkManager.unlink(provider, accessToken);
     }
 
-    private void addAccessTokenToCookie(HttpServletResponse response, String accessToken) {
-        Cookie cookie = new Cookie("token", accessToken);
+    private void addCookie(HttpServletResponse response, String name, String value) {
+        Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60);
