@@ -45,8 +45,8 @@ public class AccountService {
                 .body(responseEntity.getBody());
 
         } catch (HttpClientErrorException e) {
-            log.error("signup exception {}", e.getResponseBodyAsString());
-            throw new MetaServerException(ErrorEnum.META_SERVER_EXCEPTION);
+            log.error("signup exception {}, email {}", e.getResponseBodyAsString(), signupRequest.getEmail());
+            throw new MetaServerException(ErrorEnum.DUPLICATE_EMAIL);
         }
     }
 
