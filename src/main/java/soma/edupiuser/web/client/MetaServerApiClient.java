@@ -28,7 +28,7 @@ public interface MetaServerApiClient {
     ResponseEntity<SignupResponse> saveAccount(@RequestBody SignupRequest signupRequest);
 
     @GetExchange("/check-email")
-    boolean isExistsEmail(@RequestParam("email") String email);
+    boolean isExistsEmail(@RequestParam("email") String email, @RequestParam("isSocial") boolean isSocial);
 
     @PostExchange("/signup/oauth")
     ResponseEntity<SignupResponse> saveAccountWithOauth(@RequestBody SignupOauthRequest signupOauthRequest);

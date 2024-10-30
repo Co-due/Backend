@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.EmailRequest;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.oauth.models.OAuth2Provider;
@@ -13,6 +15,7 @@ import soma.edupiuser.oauth.models.OAuth2UserUnlinkManager;
 import soma.edupiuser.oauth.models.SignupOauthRequest;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
+import soma.edupiuser.web.exception.ErrorEnum;
 
 @Service
 @Slf4j
@@ -36,12 +39,18 @@ public class OAuth2AccountService {
         String email = principal.getUserInfo().getEmail();
         String name = principal.getUserInfo().getName();
 
-        if (!metaServerApiClient.isExistsEmail(email)) {
-            log.info("handleLogin - signup, email={}", email);
-            metaServerApiClient.saveAccountWithOauth(SignupOauthRequest.builder()
-                .email(email)
-                .name(name)
-                .build());
+        try {
+            if (metaServerApiClient.isExistsEmail(email, false)) {
+                log.info("handleLogin - signup, email={}", email);
+                // DB에 회원 저장
+                metaServerApiClient.saveAccountWithOauth(SignupOauthRequest.builder()
+                    .email(email)
+                    .name(name)
+                    .build());
+            }
+        } catch (HttpClientErrorException e) {
+            log.error("signup exception {}, email {}", e.getResponseBodyAsString(), email);
+            throw new MetaServerException(ErrorEnum.DUPLICATE_EMAIL);
         }
 
         log.info("handleLogin - login, email={}", email);
