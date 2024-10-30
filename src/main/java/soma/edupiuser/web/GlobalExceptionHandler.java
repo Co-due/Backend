@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import soma.edupiuser.account.exception.MetaServerException;
+import soma.edupiuser.oauth.exception.OAuth2AuthenticationProcessingException;
 import soma.edupiuser.web.exception.AccountException;
 import soma.edupiuser.web.exception.ErrorEnum;
 import soma.edupiuser.web.models.ErrorResponse;
@@ -34,6 +35,14 @@ public class GlobalExceptionHandler {
             .body(errors);
     }
 
+    @ExceptionHandler(OAuth2AuthenticationProcessingException.class)
+    public ResponseEntity<ErrorResponse> handleServerException(OAuth2AuthenticationProcessingException exception) {
+        ErrorEnum errorEnum = ErrorEnum.OAUTH2_EXCEPTION;
+
+        return ResponseEntity
+            .status(errorEnum.getHttpStatus())
+            .body(new ErrorResponse(errorEnum.getCode(), errorEnum.getDetail()));
+    }
 
     @ExceptionHandler(AccountException.class)
     public ResponseEntity<ErrorResponse> handleServerException(AccountException exception) {

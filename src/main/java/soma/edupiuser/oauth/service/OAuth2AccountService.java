@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.EmailRequest;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.oauth.models.OAuth2Provider;
@@ -15,6 +13,7 @@ import soma.edupiuser.oauth.models.OAuth2UserUnlinkManager;
 import soma.edupiuser.oauth.models.SignupOauthRequest;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
+import soma.edupiuser.web.exception.AccountException;
 import soma.edupiuser.web.exception.ErrorEnum;
 
 @Service
@@ -38,28 +37,31 @@ public class OAuth2AccountService {
     public void handleLogin(OAuth2UserPrincipal principal, HttpServletResponse response) {
         String email = principal.getUserInfo().getEmail();
         String name = principal.getUserInfo().getName();
+        String provider = principal.getUserInfo().getProvider().name().toLowerCase();
 
-        try {
-            if (metaServerApiClient.isExistsEmail(email, false)) {
-                log.info("handleLogin - signup, email={}", email);
-                // DB에 회원 저장
-                metaServerApiClient.saveAccountWithOauth(SignupOauthRequest.builder()
-                    .email(email)
-                    .name(name)
-                    .build());
-            }
-        } catch (HttpClientErrorException e) {
-            log.error("signup exception {}, email {}", e.getResponseBodyAsString(), email);
-            throw new MetaServerException(ErrorEnum.DUPLICATE_EMAIL);
+        // 회원가입이 인된 유저
+        if (metaServerApiClient.isExistsEmail(email)) {
+            //throw new OAuth2AuthenticationProcessingException("duplicate email");
+            throw new AccountException(ErrorEnum.OAUTH2_EXCEPTION);
+        }
+
+        if (!metaServerApiClient.isExistsEmail(email, provider)) {
+            log.info("handleLogin - signup, email={}", email);
+            // DB에 회원 저장
+            metaServerApiClient.saveAccountWithOauth(SignupOauthRequest.builder()
+                .email(email)
+                .name(name)
+                .provider(provider)
+                .build());
         }
 
         log.info("handleLogin - login, email={}", email);
-        Account account = metaServerApiClient.login(new EmailRequest(email));
+        Account account = metaServerApiClient.oauthLogin(new EmailRequest(email));
         String token = tokenProvider.generateToken(account);
-        String provider = principal.getUserInfo().getProvider().name();
 
         addCookie(response, "token", token);
-        addCookie(response, "provider", provider);
+
+
     }
 
     public void handleUnlink(OAuth2UserPrincipal principal) {

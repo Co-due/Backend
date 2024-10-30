@@ -87,6 +87,11 @@ public class AccountController implements AccountOpenApi {
 
     @GetMapping("/logout")
     public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response) {
+//        TokenInfo tokenInfo = accountService.findAccountInfo(token);
+//        if (tokenInfo.getProvider() == "google" || tokenInfo.getProvider() == "naver") {
+//
+//        }
+
         Cookie cookie = new Cookie("token", null);
         cookie.setPath("/");
         cookie.setMaxAge(0);

@@ -34,31 +34,25 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
 
-        try {
-            String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
-                .map(Cookie::getValue)
-                .orElse(getDefaultTargetUrl());
-            OAuth2UserPrincipal principal = oAuth2AccountService.getOAuth2UserPrincipal(authentication);
+        String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+            .map(Cookie::getValue)
+            .orElse(getDefaultTargetUrl());
+        OAuth2UserPrincipal principal = oAuth2AccountService.getOAuth2UserPrincipal(authentication);
 
-            if (principal == null) {
-                redirectWithError(request, response, targetUrl);
-                return;
-            }
-
-            handleMode(request, response, principal);
-
-            if (response.isCommitted()) {
-                logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
-                return;
-            }
-
-            clearAuthenticationAttributes(request, response);
-            getRedirectStrategy().sendRedirect(request, response, targetUrl);
-
-        } catch (Exception e) {
-            log.error("OAuth2 Success Handler 에러 발생", e);
-            //getRedirectStrategy().sendRedirect(request, response, baseUrl + "/login");
+        if (principal == null) {
+            redirectWithError(request, response, targetUrl);
+            return;
         }
+
+        handleMode(request, response, principal);
+
+        if (response.isCommitted()) {
+            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+            return;
+        }
+
+        clearAuthenticationAttributes(request, response);
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
     private void redirectWithError(HttpServletRequest request, HttpServletResponse response, String targetUrl)
