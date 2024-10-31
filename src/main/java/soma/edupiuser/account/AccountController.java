@@ -3,15 +3,12 @@ package soma.edupiuser.account;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +23,7 @@ import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.AccountService;
 import soma.edupiuser.account.service.EmailService;
+import soma.edupiuser.oauth.models.OAuth2Provider;
 
 @Slf4j
 @RestController
@@ -74,6 +72,7 @@ public class AccountController implements AccountOpenApi {
             .build();
     }
 
+
     // 이메일 인증
     @PostMapping("/activate")
     public ResponseEntity<Void> activateAccount(@RequestBody EmailRequest emailRequest) {
@@ -86,12 +85,11 @@ public class AccountController implements AccountOpenApi {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response) {
-//        TokenInfo tokenInfo = accountService.findAccountInfo(token);
-//        if (tokenInfo.getProvider() == "google" || tokenInfo.getProvider() == "naver") {
-//
-//        }
+    public ResponseEntity<LogoutResponse> logout(@CookieValue("token") String token, HttpServletResponse response) {
+        TokenInfo tokenInfo = accountService.findAccountInfo(token);
+        String provider = tokenInfo.getProvider();
 
+        // 로그아웃할 쿠키 생성
         Cookie cookie = new Cookie("token", null);
         cookie.setPath("/");
         cookie.setMaxAge(0);
@@ -100,11 +98,8 @@ public class AccountController implements AccountOpenApi {
 
         response.addCookie(cookie);
 
-        String provider = Optional.ofNullable(request.getParameter("provider")).orElse("");
-
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(new LogoutResponse(StringUtils.hasText(provider), provider));
+            .body((new LogoutResponse(OAuth2Provider.isOauth(provider), provider)));
     }
-
 }
