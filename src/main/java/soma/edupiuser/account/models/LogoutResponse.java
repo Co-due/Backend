@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LogoutResponse {
 
-    private boolean isOauthUser;
+    private String isOauthUser;
     private String provider;
 
 
     public LogoutResponse(boolean isOauthUser, String provider) {
-        this.isOauthUser = isOauthUser;
+        this.isOauthUser = isOauthUser ? "true" : "false";
         this.provider = provider;
     }
 }
