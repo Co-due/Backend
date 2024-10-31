@@ -32,7 +32,7 @@ public interface MetaServerApiClient {
     boolean isExistsEmail(@RequestParam("email") String email);
 
     @GetExchange("/check-email/{provider}")
-    boolean isExistsEmail(@RequestParam("email") String email,
+    boolean isExistsEmailByProvider(@RequestParam("email") String email,
         @PathVariable(value = "provider") String provider);
 
     @PostExchange("/signup/oauth")

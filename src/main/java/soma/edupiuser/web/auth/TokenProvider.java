@@ -51,7 +51,7 @@ public class TokenProvider {
         return TokenInfo.builder()
             .email(claims.get("email", String.class))
             .name(claims.get("name", String.class))
-            .name(claims.get("provider", String.class))
+            .provider(claims.get("provider", String.class))
             .accountRole(AccountRole.valueOf(claims.get("accountRole", String.class)))
             .build();
     }

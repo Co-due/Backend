@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +45,5 @@ public interface AccountOpenApi {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
-    ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response);
+    ResponseEntity<LogoutResponse> logout(@CookieValue("token") String token, HttpServletResponse response);
 }
