@@ -48,4 +48,5 @@ public interface AccountOpenApi {
     })
     ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response,
         @CookieValue("token") String token);
+
 }

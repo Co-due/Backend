@@ -8,12 +8,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
+<<<<<<< HEAD
 import soma.edupiuser.web.utils.CookieUtils;
+=======
+import soma.edupiuser.oauth.utils.CookieUtils;
+import soma.edupiuser.web.exception.ErrorEnum;
+>>>>>>> 0094dd2 ([#56]feat: 이메일 중복 예외 핸들러 추가)
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,6 +27,8 @@ import soma.edupiuser.web.utils.CookieUtils;
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    @Value("${site-url.base}")
+    private String baseUrl;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -29,14 +37,16 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         log.info("onAuthenticationFailure, error={}", exception.getLocalizedMessage());
         String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
             .map(Cookie::getValue)
-            .orElse(("/"));
+            .orElse(baseUrl);
 
-        targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
-            .queryParam("error", exception.getLocalizedMessage())
+        targetUrl = UriComponentsBuilder.fromUriString(targetUrl + "/login")
+            .queryParam("error", ErrorEnum.OAUTH2_EXCEPTION.getCode())
             .build().toUriString();
 
+        log.error("fail handler : " + targetUrl);
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
     }
 }
