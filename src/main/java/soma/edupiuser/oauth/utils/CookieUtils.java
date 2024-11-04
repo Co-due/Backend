@@ -26,21 +26,27 @@ public class CookieUtils {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
+        cookie.setAttribute("SameSite", "None");
+        cookie.setSecure(true);
         response.addCookie(cookie);
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
         Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(name)) {
-                    cookie.setValue("");
-                    cookie.setPath("/");
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                }
-            }
+        if (cookies == null) {
+            return;
         }
+
+        Arrays.stream(cookies)
+            .filter(cookie -> cookie.getName().equals(name))
+            .forEach(cookie -> {
+                cookie.setValue("");
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                cookie.setAttribute("SameSite", "None");
+                cookie.setSecure(true);
+                response.addCookie(cookie);
+            });
     }
 
     public static String serialize(Object object) {
