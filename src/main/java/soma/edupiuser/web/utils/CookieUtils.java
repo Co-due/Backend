@@ -6,9 +6,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
+import org.springframework.core.serializer.support.DeserializingConverter;
 import org.springframework.util.SerializationUtils;
 
 public class CookieUtils {
+
+    private static final DeserializingConverter deserializer = new DeserializingConverter();
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
@@ -64,7 +67,7 @@ public class CookieUtils {
     }
 
     public static <T> T deserialize(Cookie cookie, Class<T> cls) {
-        return cls.cast(SerializationUtils.deserialize(
-            Base64.getUrlDecoder().decode(cookie.getValue())));
+        byte[] bytes = Base64.getUrlDecoder().decode(cookie.getValue());
+        return cls.cast(deserializer.convert(bytes));
     }
 }
