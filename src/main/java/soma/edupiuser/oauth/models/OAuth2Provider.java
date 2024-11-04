@@ -12,7 +12,7 @@ public enum OAuth2Provider {
     private final String registrationId;
 
     public static boolean isOauth(String provider) {
-        return Arrays.stream(values())
+        return Arrays.stream(OAuth2Provider.values())
             .map(Enum::name)
             .anyMatch(name -> name.equalsIgnoreCase(provider));
     }
