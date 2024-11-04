@@ -1,11 +1,14 @@
 package soma.edupiuser.account.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import soma.edupiuser.account.exception.DuplicatedEmailException;
 import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
@@ -15,6 +18,7 @@ import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
 import soma.edupiuser.web.exception.ErrorEnum;
+import soma.edupiuser.web.models.ErrorResponse;
 
 @Service
 @Slf4j
@@ -33,10 +37,14 @@ public class AccountService {
         } catch (HttpClientErrorException e) {
             log.error("login exception {}", e.getResponseBodyAsString());
             throw new MetaServerException(ErrorEnum.INVALID_ACCOUNT);
+        } catch (ResourceAccessException e) {
+            throw new MetaServerException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
+        } catch (Exception e) {
+            throw new MetaServerException(ErrorEnum.TASK_FAIL);
         }
     }
 
-    public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) {
+    public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) throws JsonProcessingException {
         try {
             ResponseEntity<SignupResponse> responseEntity = metaServerApiClient.saveAccount(signupRequest);
             log.info("signup success email={}, name={}", signupRequest.getEmail(), signupRequest.getName());
@@ -45,8 +53,17 @@ public class AccountService {
                 .body(responseEntity.getBody());
 
         } catch (HttpClientErrorException e) {
-            log.error("signup exception {}, email {}", e.getResponseBodyAsString(), signupRequest.getEmail());
-            throw new MetaServerException(ErrorEnum.DUPLICATE_EMAIL);
+            ErrorResponse errorResponse = e.getResponseBodyAs(ErrorResponse.class);
+            assert errorResponse != null;
+            if (errorResponse.getCode().equals("DB-409001")) {
+                throw new DuplicatedEmailException(ErrorEnum.DUPLICATE_EMAIL);
+            } else {
+                throw new MetaServerException(ErrorEnum.TASK_FAIL);
+            }
+        } catch (ResourceAccessException e) {
+            throw new MetaServerException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
+        } catch (Exception e) {
+            throw new MetaServerException(ErrorEnum.TASK_FAIL);
         }
     }
 
