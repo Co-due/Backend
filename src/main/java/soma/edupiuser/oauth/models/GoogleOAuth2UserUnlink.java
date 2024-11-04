@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import soma.edupiuser.web.client.GoogleOAuth2ApiClient;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class GoogleOAuth2UserUnlink implements OAuth2UserUnlink {
 
     private final GoogleOAuth2ApiClient googleOAuth2ApiClient;

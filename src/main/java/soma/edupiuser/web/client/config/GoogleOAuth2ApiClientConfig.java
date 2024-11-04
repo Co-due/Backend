@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import soma.edupiuser.web.client.GoogleOAuth2ApiClient;
 
 @Configuration
 public class GoogleOAuth2ApiClientConfig {
@@ -12,7 +13,7 @@ public class GoogleOAuth2ApiClientConfig {
     private static final String GOOGLE_API_URL = "https://oauth2.googleapis.com";
 
     @Bean
-    public GoogleOAuth2ApiClientConfig googleOAuth2ApiClient() {
+    public GoogleOAuth2ApiClient googleOAuth2ApiClient() {
         RestClient restClient = RestClient.builder()
             .baseUrl(GOOGLE_API_URL)
             .build();
@@ -22,7 +23,7 @@ public class GoogleOAuth2ApiClientConfig {
             .builderFor(adapter)
             .build();
 
-        return factory.createClient(GoogleOAuth2ApiClientConfig.class);
+        return factory.createClient(GoogleOAuth2ApiClient.class);
     }
 
 }

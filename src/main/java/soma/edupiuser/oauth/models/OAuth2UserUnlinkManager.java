@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import soma.edupiuser.oauth.exception.OAuth2AuthenticationProcessingException;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class OAuth2UserUnlinkManager {
 
     private final GoogleOAuth2UserUnlink googleOAuth2UserUnlink;
