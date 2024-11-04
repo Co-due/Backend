@@ -54,12 +54,15 @@ public class AccountService {
 
         } catch (HttpClientErrorException e) {
             ErrorResponse errorResponse = e.getResponseBodyAs(ErrorResponse.class);
-            assert errorResponse != null;
+            if (errorResponse == null) {
+                throw new MetaServerException(ErrorEnum.RESPONSE_FORMAT_ERROR);
+            }
             if (errorResponse.getCode().equals("DB-409001")) {
                 throw new DuplicatedEmailException(ErrorEnum.DUPLICATE_EMAIL);
             } else {
                 throw new MetaServerException(ErrorEnum.TASK_FAIL);
             }
+
         } catch (ResourceAccessException e) {
             throw new MetaServerException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
         } catch (Exception e) {

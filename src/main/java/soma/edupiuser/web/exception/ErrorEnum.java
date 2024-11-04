@@ -11,6 +11,8 @@ public enum ErrorEnum {
     TASK_FAIL(HttpStatus.BAD_REQUEST, "AC-400005", "Please try again in a moment"),
     RESOURCE_ACCESS_EXCEPTION(HttpStatus.BAD_REQUEST, "AC-400005",
         "Unable to get resources due to network issues. check the server is started"),
+    RESPONSE_FORMAT_ERROR(HttpStatus.BAD_REQUEST, "AC-400006",
+        "Invalid error response format."),
 
     META_SERVER_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "AC-500001", "Meta server Exception"),
 
