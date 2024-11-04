@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import soma.edupiuser.oauth.utils.CookieUtils;
+import soma.edupiuser.web.utils.CookieUtils;
 
 @Slf4j
 @RequiredArgsConstructor

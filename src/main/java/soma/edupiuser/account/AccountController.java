@@ -1,8 +1,6 @@
 package soma.edupiuser.account;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -26,6 +24,7 @@ import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.AccountService;
 import soma.edupiuser.account.service.EmailService;
+import soma.edupiuser.web.utils.CookieUtils;
 
 @Slf4j
 @RestController
@@ -40,14 +39,7 @@ public class AccountController implements AccountOpenApi {
     public ResponseEntity<Void> login(@Valid @RequestBody AccountLoginRequest accountLoginRequest,
         HttpServletResponse response) {
         String token = accountService.login(accountLoginRequest);
-
-        Cookie cookie = new Cookie("token", token);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setAttribute("SameSite", "None");
-        cookie.setSecure(true);
-
-        response.addCookie(cookie);
+        CookieUtils.addCookie(response, "token", token);
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -65,7 +57,7 @@ public class AccountController implements AccountOpenApi {
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> createAccount(@Valid @RequestBody SignupRequest signupRequest)
-        throws JsonProcessingException, MessagingException {
+        throws MessagingException {
         accountService.signup(signupRequest);
         emailService.sendEmail(signupRequest.getEmail());
 
@@ -87,13 +79,7 @@ public class AccountController implements AccountOpenApi {
 
     @GetMapping("/logout")
     public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", null);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        cookie.setAttribute("SameSite", "None");
-        cookie.setSecure(true);
-
-        response.addCookie(cookie);
+        CookieUtils.deleteCookie(request, response, "token");
 
         String provider = Optional.ofNullable(request.getParameter("provider")).orElse("");
 

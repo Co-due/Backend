@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
-import soma.edupiuser.oauth.utils.CookieUtils;
+import soma.edupiuser.web.utils.CookieUtils;
 
 @Slf4j
 @RequiredArgsConstructor

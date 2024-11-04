@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import soma.edupiuser.oauth.service.OAuth2AccountService;
 import soma.edupiuser.oauth.service.OAuth2UserPrincipal;
-import soma.edupiuser.oauth.utils.CookieUtils;
+import soma.edupiuser.web.utils.CookieUtils;
 
 @Slf4j
 @RequiredArgsConstructor
