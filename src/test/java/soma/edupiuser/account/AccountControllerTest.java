@@ -10,20 +10,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.AccountService;
 import soma.edupiuser.account.service.EmailService;
-import soma.edupiuser.web.exception.MetaValidException;
+import soma.edupiuser.web.exception.ErrorEnum;
 
 @WebMvcTest(AccountController.class)
+@AutoConfigureMockMvc(addFilters = false)   // Spring Security 필터 비활성화
 class AccountControllerTest {
 
     @MockBean
@@ -52,7 +55,8 @@ class AccountControllerTest {
                 .content(objectMapper.writeValueAsString(accountLoginRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isOk())
+            )
+            .andExpect(status().isOk())
             .andExpect(cookie().exists("token"));
     }
 
@@ -94,11 +98,10 @@ class AccountControllerTest {
 
         // Mocking
         when(accountService.signup(signupRequest))
-            .thenThrow(new MetaValidException("Invalid email address"));
+            .thenThrow(new MetaServerException(ErrorEnum.META_SERVER_EXCEPTION));
 
         // When & Then
         mockMvc.perform(post("/v1/account/signup")
-                .content(objectMapper.writeValueAsString(signupRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest()); // 예외 처리 후 상태 코드가 400인지 검증

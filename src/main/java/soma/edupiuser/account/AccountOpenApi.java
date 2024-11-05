@@ -7,12 +7,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import soma.edupiuser.account.models.AccountLoginRequest;
+import soma.edupiuser.account.models.LogoutResponse;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
@@ -44,5 +46,7 @@ public interface AccountOpenApi {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
-    ResponseEntity<Void> logout(HttpServletResponse response);
+    ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response,
+        @CookieValue("token") String token);
+
 }

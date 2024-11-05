@@ -12,5 +12,6 @@ public class TokenInfo {
 
     private String email;
     private String name;
+    private String provider;
     private AccountRole accountRole;
 }

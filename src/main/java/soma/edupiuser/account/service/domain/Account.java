@@ -12,13 +12,15 @@ public class Account {
     private String password;
     private String email;
     private String name;
+    private String provider;
     private AccountRole accountRole;
 
-    public Account(Long id, String email, String password, String name, AccountRole accountRole) {
+    public Account(Long id, String email, String password, String name, String provider, AccountRole accountRole) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
+        this.provider = provider;
         this.accountRole = accountRole;
     }
 

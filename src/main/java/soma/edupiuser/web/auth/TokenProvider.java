@@ -1,8 +1,7 @@
-package soma.edupiuser.account.auth;
+package soma.edupiuser.web.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
 import io.jsonwebtoken.io.Decoders;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Component;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
+import soma.edupiuser.web.exception.AccountException;
+import soma.edupiuser.web.exception.ErrorEnum;
 
 @Component
 public class TokenProvider {
@@ -35,6 +36,7 @@ public class TokenProvider {
             .claim("accountId", account.getId())
             .claim("email", account.getEmail())
             .claim("name", account.getName())
+            .claim("provider", account.getProvider())
             .claim("accountRole", account.getAccountRole())
             .signWith(key, SIG.HS512)
             .expiration(tokenExpiration)
@@ -49,6 +51,7 @@ public class TokenProvider {
         return TokenInfo.builder()
             .email(claims.get("email", String.class))
             .name(claims.get("name", String.class))
+            .provider(claims.get("provider", String.class))
             .accountRole(AccountRole.valueOf(claims.get("accountRole", String.class)))
             .build();
     }
@@ -73,7 +76,7 @@ public class TokenProvider {
 
     private void isTokenExpired(Claims claims) {
         if (claims.getExpiration().before(new Date())) {
-            throw new JwtException("토큰이 만료되었습니다.");
+            throw new AccountException(ErrorEnum.TOKEN_EXPIRE);
         }
     }
 

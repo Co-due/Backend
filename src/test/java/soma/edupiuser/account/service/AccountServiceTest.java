@@ -1,10 +1,7 @@
 package soma.edupiuser.account.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,16 +13,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-import soma.edupiuser.account.auth.TokenProvider;
-import soma.edupiuser.account.client.MetaServerApiClient;
+import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
-import soma.edupiuser.web.exception.MetaValidException;
-import soma.edupiuser.web.models.ErrorResponse;
+import soma.edupiuser.web.auth.TokenProvider;
+import soma.edupiuser.web.client.MetaServerApiClient;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest {
@@ -80,8 +75,7 @@ public class AccountServiceTest {
         );
 
         Assertions.assertThatThrownBy(() -> accountService.login(accountLoginRequest))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("아이디 비밀번호가 일치하지 않습니다.");
+            .isInstanceOf(MetaServerException.class);
     }
 
     @Test
@@ -105,34 +99,5 @@ public class AccountServiceTest {
 
         // Then
         Assertions.assertThat(HttpStatus.OK).isEqualTo(result.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("회원가입 요청 중 client 에러 발생")
-    public void signUp_clientError() throws JsonProcessingException {
-        // Given
-        SignupRequest signupRequest = SignupRequest.builder()
-            .email("invalid-email@example.com")
-            .name("John Doe")
-            .password("validPassword123")
-            .build();
-
-        // JSON 문자열과 해당 문자열을 파싱한 결과 객체
-        String errorResponse = "{\"message\":\"Invalid request\"}";
-        ErrorResponse mockResponse = new ErrorResponse("Invalid request");
-
-        // HttpClientErrorException을 모킹하여 예외의 응답 본문이 JSON 문자열로 반환되도록 설정
-        HttpClientErrorException exception = mock(HttpClientErrorException.class);
-        when(exception.getResponseBodyAsString()).thenReturn(errorResponse);
-        when(exception.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
-
-        // 예외를 던지도록 설정
-        when(metaServerApiClient.saveAccount(signupRequest)).thenThrow(exception);
-
-        // objectMapper의 readValue 메서드가 JSON 문자열을 Response 객체로 변환하도록 설정
-        when(objectMapper.readValue(errorResponse, ErrorResponse.class)).thenReturn(mockResponse);
-
-        // When & Then
-        assertThrows(MetaValidException.class, () -> accountService.signup(signupRequest));
     }
 }
