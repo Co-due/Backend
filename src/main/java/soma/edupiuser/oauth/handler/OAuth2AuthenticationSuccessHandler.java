@@ -1,8 +1,5 @@
 package soma.edupiuser.oauth.handler;
 
-import static soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository.MODE_PARAM_COOKIE_NAME;
-import static soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +20,9 @@ import soma.edupiuser.web.utils.CookieUtils;
 @RequiredArgsConstructor
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
+    private static final String MODE_PARAM_COOKIE_NAME = "mode";
 
     private final OAuth2AccountService oAuth2AccountService;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;

@@ -1,6 +1,5 @@
 package soma.edupiuser.oauth.handler;
 
-import static soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +21,8 @@ import soma.edupiuser.web.utils.CookieUtils;
 @Component
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    private static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
+
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     @Value("${site-url.base}")
     private String baseUrl;
@@ -30,7 +31,6 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException exception) throws IOException {
 
-        log.info("onAuthenticationFailure, error={}", exception.getLocalizedMessage());
         String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
             .map(Cookie::getValue)
             .orElse(baseUrl);
@@ -39,9 +39,8 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
             .queryParam("error", ErrorEnum.OAUTH2_EXCEPTION.getCode())
             .build().toUriString();
 
-        log.error("fail handler : " + targetUrl);
+        log.info("onAuthenticationFailure handler : " + targetUrl);
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
-
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
     }
