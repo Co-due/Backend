@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(ErrorEnum.TASK_FAIL.getCode(), "쿠키에 필요한 값이 없습니다."));
+            .body(new ErrorResponse(ErrorEnum.TOKEN_NOT_FOUND.getCode(), ErrorEnum.TOKEN_NOT_FOUND.getDetail()));
     }
 
 }
