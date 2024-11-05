@@ -42,6 +42,7 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers(antMatcher("/v1/account/**")).permitAll()
+                .requestMatchers(antMatcher("/health-check")).permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
