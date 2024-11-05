@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import soma.edupiuser.account.exception.DuplicatedEmailException;
 import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
@@ -15,6 +17,7 @@ import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
 import soma.edupiuser.web.exception.ErrorEnum;
+import soma.edupiuser.web.models.ErrorResponse;
 
 @Service
 @Slf4j
@@ -33,6 +36,10 @@ public class AccountService {
         } catch (HttpClientErrorException e) {
             log.error("login exception {}", e.getResponseBodyAsString());
             throw new MetaServerException(ErrorEnum.INVALID_ACCOUNT);
+        } catch (ResourceAccessException e) {
+            throw new MetaServerException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
+        } catch (Exception e) {
+            throw new MetaServerException(ErrorEnum.TASK_FAIL);
         }
     }
 
@@ -45,8 +52,20 @@ public class AccountService {
                 .body(responseEntity.getBody());
 
         } catch (HttpClientErrorException e) {
-            log.error("signup exception {}", e.getResponseBodyAsString());
-            throw new MetaServerException(ErrorEnum.META_SERVER_EXCEPTION);
+            ErrorResponse errorResponse = e.getResponseBodyAs(ErrorResponse.class);
+            if (errorResponse == null) {
+                throw new MetaServerException(ErrorEnum.RESPONSE_FORMAT_ERROR);
+            }
+            if (errorResponse.getCode().equals("DB-409001")) {
+                throw new DuplicatedEmailException(ErrorEnum.DUPLICATE_EMAIL);
+            } else {
+                throw new MetaServerException(ErrorEnum.TASK_FAIL);
+            }
+
+        } catch (ResourceAccessException e) {
+            throw new MetaServerException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
+        } catch (Exception e) {
+            throw new MetaServerException(ErrorEnum.TASK_FAIL);
         }
     }
 

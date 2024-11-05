@@ -1,5 +1,6 @@
 package soma.edupiuser.account.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LogoutResponse {
 
+    @JsonProperty("isOauthUser")
     private boolean isOauthUser;
     private String provider;
 

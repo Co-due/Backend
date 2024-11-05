@@ -2,6 +2,7 @@ package soma.edupiuser.web.client;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
@@ -22,13 +23,17 @@ public interface MetaServerApiClient {
     Account login(@RequestBody AccountLoginRequest accountLoginRequest);
 
     @PostExchange("/login/oauth")
-    Account login(@RequestBody EmailRequest emailRequest);
+    Account oauthLogin(@RequestBody EmailRequest emailRequest);
 
     @PostExchange("/signup")
     ResponseEntity<SignupResponse> saveAccount(@RequestBody SignupRequest signupRequest);
 
     @GetExchange("/check-email")
     boolean isExistsEmail(@RequestParam("email") String email);
+
+    @GetExchange("/check-email/{provider}")
+    boolean isExistsEmailByProvider(@RequestParam("email") String email,
+        @PathVariable String provider);
 
     @PostExchange("/signup/oauth")
     ResponseEntity<SignupResponse> saveAccountWithOauth(@RequestBody SignupOauthRequest signupOauthRequest);

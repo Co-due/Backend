@@ -8,11 +8,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import soma.edupiuser.account.models.EmailRequest;
 import soma.edupiuser.account.service.domain.Account;
+import soma.edupiuser.oauth.exception.OAuth2AuthenticationProcessingException;
 import soma.edupiuser.oauth.models.OAuth2Provider;
 import soma.edupiuser.oauth.models.OAuth2UserUnlinkManager;
 import soma.edupiuser.oauth.models.SignupOauthRequest;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
+import soma.edupiuser.web.exception.ErrorEnum;
 
 @Service
 @Slf4j
@@ -35,22 +37,25 @@ public class OAuth2AccountService {
     public void handleLogin(OAuth2UserPrincipal principal, HttpServletResponse response) {
         String email = principal.getUserInfo().getEmail();
         String name = principal.getUserInfo().getName();
+        String provider = principal.getUserInfo().getProvider().name().toLowerCase();
 
-        if (!metaServerApiClient.isExistsEmail(email)) {
+        if (!metaServerApiClient.isExistsEmailByProvider(email, provider)) {
+            if (metaServerApiClient.isExistsEmail(email)) {
+                throw new OAuth2AuthenticationProcessingException(ErrorEnum.OAUTH2_EXCEPTION.getDetail());
+            }
             log.info("handleLogin - signup, email={}", email);
+            // DB에 회원 저장
             metaServerApiClient.saveAccountWithOauth(SignupOauthRequest.builder()
                 .email(email)
                 .name(name)
+                .provider(provider)
                 .build());
         }
-
         log.info("handleLogin - login, email={}", email);
-        Account account = metaServerApiClient.login(new EmailRequest(email));
+        Account account = metaServerApiClient.oauthLogin(new EmailRequest(email));
         String token = tokenProvider.generateToken(account);
-        String provider = principal.getUserInfo().getProvider().name();
 
         addCookie(response, "token", token);
-        addCookie(response, "provider", provider);
     }
 
     public void handleUnlink(OAuth2UserPrincipal principal) {

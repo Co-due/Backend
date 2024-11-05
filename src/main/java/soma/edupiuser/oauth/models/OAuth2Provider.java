@@ -1,5 +1,6 @@
 package soma.edupiuser.oauth.models;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -10,4 +11,10 @@ public enum OAuth2Provider {
     NAVER("naver");
 
     private final String registrationId;
+
+    public static boolean isOauth(String provider) {
+        return Arrays.stream(OAuth2Provider.values())
+            .map(Enum::name)
+            .anyMatch(name -> name.equalsIgnoreCase(provider));
+    }
 }

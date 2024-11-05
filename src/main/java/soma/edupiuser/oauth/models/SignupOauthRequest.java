@@ -18,4 +18,6 @@ public class SignupOauthRequest {
 
     private String name;
 
+    private String provider;
+
 }

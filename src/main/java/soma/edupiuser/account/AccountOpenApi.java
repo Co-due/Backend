@@ -46,5 +46,7 @@ public interface AccountOpenApi {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = @Content(mediaType = "application/json")),
     })
-    ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response);
+    ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response,
+        @CookieValue("token") String token);
+
 }
