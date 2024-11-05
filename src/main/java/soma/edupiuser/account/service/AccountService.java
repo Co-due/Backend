@@ -34,7 +34,6 @@ public class AccountService {
             return tokenProvider.generateToken(findAccount);
 
         } catch (HttpClientErrorException e) {
-            log.error("login exception {}", e.getResponseBodyAsString());
             throw new MetaServerException(ErrorEnum.INVALID_ACCOUNT);
         } catch (ResourceAccessException e) {
             throw new MetaServerException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
