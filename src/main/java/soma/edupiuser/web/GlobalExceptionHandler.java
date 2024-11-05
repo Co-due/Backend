@@ -3,6 +3,7 @@ package soma.edupiuser.web;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import soma.edupiuser.account.exception.DuplicatedEmailException;
@@ -36,7 +37,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(ErrorEnum.TASK_FAIL.getCode(), ErrorEnum.TASK_FAIL.getDetail()));
+    }
 
+    @ExceptionHandler(MissingRequestCookieException.class)
+    public ResponseEntity<ErrorResponse> handleMissingCookieExceptions(MissingRequestCookieException exception) {
+        log.error("[Meta Exception] code={}, message={}", exception.getStatusCode(), exception.getMessage());
+
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(ErrorEnum.TASK_FAIL.getCode(), "쿠키에 필요한 값이 없습니다."));
     }
 
 }
