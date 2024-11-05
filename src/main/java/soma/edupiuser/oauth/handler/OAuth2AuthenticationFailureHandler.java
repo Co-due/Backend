@@ -14,12 +14,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import soma.edupiuser.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
-<<<<<<< HEAD
-import soma.edupiuser.web.utils.CookieUtils;
-=======
-import soma.edupiuser.oauth.utils.CookieUtils;
 import soma.edupiuser.web.exception.ErrorEnum;
->>>>>>> 0094dd2 ([#56]feat: 이메일 중복 예외 핸들러 추가)
+import soma.edupiuser.web.utils.CookieUtils;
 
 @Slf4j
 @RequiredArgsConstructor
