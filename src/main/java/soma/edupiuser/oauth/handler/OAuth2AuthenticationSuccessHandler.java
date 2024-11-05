@@ -44,7 +44,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
 
-        handleMode(request, response, principal);
+        signupAndLogin(request, response, principal);
 
         if (response.isCommitted()) {
             log.debug("Response has already been committed. Unable to redirect to " + targetUrl);
@@ -63,18 +63,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         getRedirectStrategy().sendRedirect(request, response, errorUrl);
     }
 
-    private void handleMode(HttpServletRequest request, HttpServletResponse response, OAuth2UserPrincipal principal) {
-        String mode = CookieUtils.getCookie(request, MODE_PARAM_COOKIE_NAME)
-            .map(Cookie::getValue)
-            .orElse("");
-
-        if ("login".equalsIgnoreCase(mode)) {
-            oAuth2AccountService.handleLogin(principal, response);
-        } else if ("unlink".equalsIgnoreCase(mode)) {
-            oAuth2AccountService.handleUnlink(principal);
-        } else {
-            oAuth2AccountService.handleLogin(principal, response);
-        }
+    private void signupAndLogin(HttpServletRequest request, HttpServletResponse response,
+        OAuth2UserPrincipal principal) {
+        oAuth2AccountService.signupAndLogin(principal, response);
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
