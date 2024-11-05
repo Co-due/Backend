@@ -13,7 +13,7 @@ public class NaverOAuth2ApiClientConfig {
     private static final String NAVER_API_URL = "https://nid.naver.com";
 
     @Bean
-    public NaverOAuth2ApiClient googleOAuth2ApiClient() {
+    public NaverOAuth2ApiClient naverOAuth2ApiClient() {
         RestClient restClient = RestClient.builder()
             .baseUrl(NAVER_API_URL)
             .build();

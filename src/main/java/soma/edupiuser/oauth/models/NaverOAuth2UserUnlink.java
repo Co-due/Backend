@@ -10,8 +10,6 @@ import soma.edupiuser.web.client.NaverOAuth2ApiClient;
 @Component
 public class NaverOAuth2UserUnlink implements OAuth2UserUnlink {
 
-    private static final String URL = "https://nid.naver.com/oauth2.0/token";
-
     private final NaverOAuth2ApiClient naverOAuth2ApiClient;
 
     private final RestTemplate restTemplate;
