@@ -38,7 +38,7 @@ public class AccountController implements AccountOpenApi {
     public ResponseEntity<Void> login(@Valid @RequestBody AccountLoginRequest accountLoginRequest,
         HttpServletResponse response) {
         String token = accountService.login(accountLoginRequest);
-        CookieUtils.addCookie(response, "token", token);
+        CookieUtils.addCookie(response, "token", token, 60 * 60);
 
         return ResponseEntity
             .status(HttpStatus.OK)
