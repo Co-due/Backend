@@ -42,8 +42,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String accessToken = userRequest.getAccessToken().getTokenValue();
 
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId,
-            accessToken,
-            oAuth2User.getAttributes());
+            accessToken, oAuth2User.getAttributes());
 
         // OAuth2UserInfo field value validation
         if (!StringUtils.hasText(oAuth2UserInfo.getEmail())) {

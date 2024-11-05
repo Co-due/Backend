@@ -2,23 +2,24 @@ package soma.edupiuser.oauth.models;
 
 import java.util.Map;
 
-public class GoogleOAuth2UserInfo implements OAuth2UserInfo {
+public class NaverOAuth2UserInfo implements OAuth2UserInfo {
 
     private final Map<String, Object> attributes;
     private final String accessToken;
     private final String email;
     private final String name;
 
-    public GoogleOAuth2UserInfo(String accessToken, Map<String, Object> attributes) {
+    public NaverOAuth2UserInfo(String accessToken, Map<String, Object> attributes) {
         this.accessToken = accessToken;
-        this.attributes = attributes;
-        this.email = (String) attributes.get("email");
-        this.name = (String) attributes.get("name");
+        // attributes 맵의 response 키의 값에 실제 attributes 맵이 할당되어 있음
+        this.attributes = (Map<String, Object>) attributes.get("response");
+        this.email = (String) this.attributes.get("email");
+        this.name = (String) this.attributes.get("name");
     }
 
     @Override
     public OAuth2Provider getProvider() {
-        return OAuth2Provider.GOOGLE;
+        return OAuth2Provider.NAVER;
     }
 
     @Override
