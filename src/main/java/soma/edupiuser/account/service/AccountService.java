@@ -1,6 +1,5 @@
 package soma.edupiuser.account.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -44,7 +43,7 @@ public class AccountService {
         }
     }
 
-    public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) throws JsonProcessingException {
+    public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) {
         try {
             ResponseEntity<SignupResponse> responseEntity = metaServerApiClient.saveAccount(signupRequest);
             log.info("signup success email={}, name={}", signupRequest.getEmail(), signupRequest.getName());
