@@ -64,7 +64,7 @@ public class TokenProvider {
 
     private Claims getClaims(String token) {
         if (token == null || token.isEmpty()) {
-            throw new IllegalArgumentException("토큰이 없습니다.");
+            throw new AccountException(ErrorEnum.TOKEN_NOT_FOUND);
         }
 
         try {

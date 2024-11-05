@@ -1,7 +1,9 @@
 package soma.edupiuser.web.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public enum ErrorEnum {
     // 400
     TOKEN_EXPIRE(HttpStatus.BAD_REQUEST, "AC-400001", "The token has expired"),
@@ -13,6 +15,7 @@ public enum ErrorEnum {
         "Unable to get resources due to network issues. check the server is started"),
     RESPONSE_FORMAT_ERROR(HttpStatus.BAD_REQUEST, "AC-400006",
         "Invalid error response format."),
+    TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "AC-400007", "Token not found."),
 
     META_SERVER_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "AC-500001", "Meta server Exception"),
 
@@ -26,18 +29,6 @@ public enum ErrorEnum {
         this.httpStatus = httpStatus;
         this.code = code;
         this.detail = details;
-    }
-
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getDetail() {
-        return detail;
     }
 
 }
