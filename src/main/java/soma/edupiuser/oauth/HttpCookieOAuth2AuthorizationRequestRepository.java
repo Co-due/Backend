@@ -2,8 +2,6 @@ package soma.edupiuser.oauth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
@@ -42,11 +40,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
             return;
         }
 
-        // ParameterMap의 모든 내용을 출력
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        parameterMap.forEach((key, value) -> {
-            log.info("Parameter - Key: {}, Value: {}", key, Arrays.toString(value));
-        });
         CookieUtils.addCookie(response,
             OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
             CookieUtils.serialize(authorizationRequest),
