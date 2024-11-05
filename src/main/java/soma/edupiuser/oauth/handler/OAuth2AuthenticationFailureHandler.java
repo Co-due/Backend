@@ -40,7 +40,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
             .queryParam("error", ErrorEnum.OAUTH2_EXCEPTION.getCode())
             .build().toUriString();
 
-        log.info("onAuthenticationFailure handler : " + targetUrl);
+        log.debug("onAuthenticationFailure handler : " + targetUrl);
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
 

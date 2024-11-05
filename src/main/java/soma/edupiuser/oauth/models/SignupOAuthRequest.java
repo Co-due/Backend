@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class SignupOauthRequest {
+public class SignupOAuthRequest {
 
     @Email(message = "잘못된 이메일 형식입니다.")
     private String email;

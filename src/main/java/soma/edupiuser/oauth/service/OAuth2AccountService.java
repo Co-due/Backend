@@ -10,7 +10,7 @@ import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.oauth.exception.OAuth2AuthenticationProcessingException;
 import soma.edupiuser.oauth.models.OAuth2Provider;
 import soma.edupiuser.oauth.models.OAuth2UserUnlinkManager;
-import soma.edupiuser.oauth.models.SignupOauthRequest;
+import soma.edupiuser.oauth.models.SignupOAuthRequest;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
 import soma.edupiuser.web.exception.ErrorEnum;
@@ -45,7 +45,7 @@ public class OAuth2AccountService {
             }
             log.info("handleLogin - signup, email={}", email);
             // DB에 회원 저장
-            metaServerApiClient.saveAccountWithOauth(SignupOauthRequest.builder()
+            metaServerApiClient.saveAccountWithOauth(SignupOAuthRequest.builder()
                 .email(email)
                 .name(name)
                 .provider(provider)

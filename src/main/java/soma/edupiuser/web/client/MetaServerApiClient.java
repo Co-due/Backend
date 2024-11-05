@@ -13,7 +13,7 @@ import soma.edupiuser.account.models.EmailRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.service.domain.Account;
-import soma.edupiuser.oauth.models.SignupOauthRequest;
+import soma.edupiuser.oauth.models.SignupOAuthRequest;
 
 @Component
 @HttpExchange("/v1/account")
@@ -36,7 +36,7 @@ public interface MetaServerApiClient {
         @PathVariable("provider") String provider);
 
     @PostExchange("/signup/oauth")
-    ResponseEntity<SignupResponse> saveAccountWithOauth(@RequestBody SignupOauthRequest signupOauthRequest);
+    void saveAccountWithOauth(@RequestBody SignupOAuthRequest signupOauthRequest);
 
     @PostExchange("/activate")
     void activate(@RequestBody EmailRequest emailRequest);

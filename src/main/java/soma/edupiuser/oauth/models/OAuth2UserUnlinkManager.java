@@ -18,7 +18,8 @@ public class OAuth2UserUnlinkManager {
             naverOAuth2UserUnlink.unlink(accessToken);
         } else {
             throw new OAuth2AuthenticationProcessingException(
-                "Unlink with " + provider.getRegistrationId() + " is not supported");
+                "Unlink with " + provider.getRegistrationId() + " is not supported"
+            );
         }
     }
 }
