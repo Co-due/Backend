@@ -77,15 +77,11 @@ public class AccountController implements AccountOpenApi {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response,
-        @CookieValue("token") String token) {
-        TokenInfo tokenInfo = accountService.findAccountInfo(token);
-        String provider = tokenInfo.getProvider();
-
+    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response) {
         CookieUtils.deleteCookie(request, response, "token");
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body((new LogoutResponse(false, provider)));
+            .build();
     }
 }
