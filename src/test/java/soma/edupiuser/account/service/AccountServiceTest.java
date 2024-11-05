@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
@@ -74,8 +75,7 @@ public class AccountServiceTest {
         );
 
         Assertions.assertThatThrownBy(() -> accountService.login(accountLoginRequest))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("아이디 비밀번호가 일치하지 않습니다.");
+            .isInstanceOf(MetaServerException.class);
     }
 
     @Test

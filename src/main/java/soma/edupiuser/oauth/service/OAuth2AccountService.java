@@ -1,6 +1,5 @@
 package soma.edupiuser.oauth.service;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +14,7 @@ import soma.edupiuser.oauth.models.SignupOauthRequest;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
 import soma.edupiuser.web.exception.ErrorEnum;
+import soma.edupiuser.web.utils.CookieUtils;
 
 @Service
 @Slf4j
@@ -55,7 +55,7 @@ public class OAuth2AccountService {
         Account account = metaServerApiClient.oauthLogin(new EmailRequest(email));
         String token = tokenProvider.generateToken(account);
 
-        addCookie(response, "token", token);
+        CookieUtils.addCookie(response, "token", token, 60 * 60);
     }
 
     public void handleUnlink(OAuth2UserPrincipal principal) {
@@ -66,14 +66,6 @@ public class OAuth2AccountService {
         String accessToken = principal.getUserInfo().getAccessToken();
         OAuth2Provider provider = principal.getUserInfo().getProvider();
         oAuth2UserUnlinkManager.unlink(provider, accessToken);
-    }
-
-    private void addCookie(HttpServletResponse response, String name, String value) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
-        response.addCookie(cookie);
     }
 
 
