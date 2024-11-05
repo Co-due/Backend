@@ -22,7 +22,6 @@ import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.AccountService;
 import soma.edupiuser.account.service.EmailService;
-import soma.edupiuser.oauth.models.OAuth2Provider;
 import soma.edupiuser.web.utils.CookieUtils;
 
 @Slf4j
@@ -78,15 +77,11 @@ public class AccountController implements AccountOpenApi {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response,
-        @CookieValue("token") String token) {
-        TokenInfo tokenInfo = accountService.findAccountInfo(token);
-        String provider = tokenInfo.getProvider();
-
+    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response) {
         CookieUtils.deleteCookie(request, response, "token");
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body((new LogoutResponse(OAuth2Provider.isOauth(provider), provider)));
+            .build();
     }
 }
