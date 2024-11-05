@@ -41,7 +41,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestCookieException.class)
     public ResponseEntity<ErrorResponse> handleMissingCookieExceptions(MissingRequestCookieException exception) {
-        log.error("[Meta Exception] code={}, message={}", exception.getStatusCode(), exception.getMessage());
+        log.error("[MissingRequestCookieException] code={}, message={}", exception.getStatusCode(),
+            exception.getMessage());
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
