@@ -1,6 +1,7 @@
 package soma.edupiuser.oauth.models;
 
 import java.util.Arrays;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,5 +17,9 @@ public enum OAuth2Provider {
         return Arrays.stream(OAuth2Provider.values())
             .map(Enum::name)
             .anyMatch(name -> name.equalsIgnoreCase(provider));
+    }
+
+    public boolean isEqualRegistrationId(String registrationId) {
+        return Objects.equals(this.registrationId, registrationId);
     }
 }

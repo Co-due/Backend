@@ -11,9 +11,9 @@ public class OAuth2UserInfoFactory {
         String accessToken,
         Map<String, Object> attributes) {
         log.info("OAuth2UserInfoFactory 도착");
-        if (OAuth2Provider.GOOGLE.getRegistrationId().equals(registrationId)) {
+        if (OAuth2Provider.GOOGLE.isEqualRegistrationId(registrationId)) {
             return new GoogleOAuth2UserInfo(accessToken, attributes);
-        } else if (OAuth2Provider.NAVER.getRegistrationId().equals(registrationId)) {
+        } else if (OAuth2Provider.NAVER.isEqualRegistrationId(registrationId)) {
             return new NaverOAuth2UserInfo(accessToken, attributes);
         } else {
             throw new OAuth2AuthenticationProcessingException("Login with " + registrationId + " is not supported");

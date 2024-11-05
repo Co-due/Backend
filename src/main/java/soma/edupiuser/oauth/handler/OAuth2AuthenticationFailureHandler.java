@@ -35,6 +35,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
             .map(Cookie::getValue)
             .orElse(baseUrl);
 
+        // TODD : 에외에 따라 다른 처리
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl + "/login")
             .queryParam("error", ErrorEnum.OAUTH2_EXCEPTION.getCode())
             .build().toUriString();
