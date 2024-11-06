@@ -16,6 +16,7 @@ import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
+import soma.edupiuser.web.exception.AccountException;
 import soma.edupiuser.web.exception.ErrorEnum;
 import soma.edupiuser.web.models.ErrorResponse;
 
@@ -34,11 +35,21 @@ public class AccountService {
             return tokenProvider.generateToken(findAccount);
 
         } catch (HttpClientErrorException e) {
-            throw new MetaServerException(ErrorEnum.INVALID_ACCOUNT);
+            ErrorResponse errorResponse = e.getResponseBodyAs(ErrorResponse.class);
+            if (errorResponse == null) {
+                throw new MetaServerException(ErrorEnum.NOT_MATCH_ERROR);
+            }
+            if (errorResponse.getCode().equals("DB-400002")) {
+                throw new AccountException(ErrorEnum.INVALID_ACCOUNT);
+            } else if (errorResponse.getCode().equals("DB-400003")) {
+                throw new AccountException(ErrorEnum.NOT_ACTIVATED_EXCEPTION);
+            } else {
+                throw new MetaServerException(ErrorEnum.NOT_MATCH_ERROR);
+            }
         } catch (ResourceAccessException e) {
-            throw new MetaServerException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
+            throw new AccountException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
         } catch (Exception e) {
-            throw new MetaServerException(ErrorEnum.TASK_FAIL);
+            throw new AccountException(ErrorEnum.TASK_FAIL);
         }
     }
 
@@ -53,18 +64,17 @@ public class AccountService {
         } catch (HttpClientErrorException e) {
             ErrorResponse errorResponse = e.getResponseBodyAs(ErrorResponse.class);
             if (errorResponse == null) {
-                throw new MetaServerException(ErrorEnum.RESPONSE_FORMAT_ERROR);
+                throw new MetaServerException(ErrorEnum.NOT_MATCH_ERROR);
             }
             if (errorResponse.getCode().equals("DB-409001")) {
                 throw new DuplicatedEmailException(ErrorEnum.DUPLICATE_EMAIL);
             } else {
-                throw new MetaServerException(ErrorEnum.TASK_FAIL);
+                throw new MetaServerException(ErrorEnum.NOT_MATCH_ERROR);
             }
-
         } catch (ResourceAccessException e) {
-            throw new MetaServerException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
+            throw new AccountException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
         } catch (Exception e) {
-            throw new MetaServerException(ErrorEnum.TASK_FAIL);
+            throw new AccountException(ErrorEnum.TASK_FAIL);
         }
     }
 

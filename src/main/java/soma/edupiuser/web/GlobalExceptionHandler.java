@@ -18,8 +18,8 @@ import soma.edupiuser.web.models.ErrorResponse;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({AccountException.class, DuplicatedEmailException.class})
-    public ResponseEntity<ErrorResponse> handleServerException(BaseException exception) {
-        log.error("[{}] code={}, message={}", exception.getClass().getSimpleName(), exception.getErrorCode(),
+    public ResponseEntity<ErrorResponse> handleAccountException(BaseException exception) {
+        log.debug("[{}] code={}, message={}", exception.getClass().getSimpleName(), exception.getErrorCode().getCode(),
             exception.getMessage());
         ErrorEnum errorEnum = exception.getErrorCode();
 
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MetaServerException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MetaServerException exception) {
+    public ResponseEntity<ErrorResponse> handleMetaExceptions(MetaServerException exception) {
         log.error("[Meta Exception] code={}, message={}, detail message={}", exception.getErrorCode().getCode(),
             exception.getErrorCode().getDetail(),
             exception.getMessage());
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestCookieException.class)
     public ResponseEntity<ErrorResponse> handleMissingCookieExceptions(MissingRequestCookieException exception) {
-        log.error("[MissingRequestCookieException] code={}, message={}", exception.getStatusCode(),
+        log.debug("[MissingRequestCookieException] code={}, message={}", exception.getStatusCode(),
             exception.getMessage());
 
         return ResponseEntity
@@ -49,4 +49,23 @@ public class GlobalExceptionHandler {
             .body(new ErrorResponse(ErrorEnum.TOKEN_NOT_FOUND.getCode(), ErrorEnum.TOKEN_NOT_FOUND.getDetail()));
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+        printErrorLog(exception);
+
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(ErrorEnum.TASK_FAIL.getCode(), ErrorEnum.TASK_FAIL.getDetail()));
+    }
+
+    private void printErrorLog(Exception exception) {
+        StackTraceElement[] stackTrace = exception.getStackTrace();
+        String className = stackTrace[0].getClassName();
+        String methodName = stackTrace[0].getMethodName();
+
+        String exceptionMessage = exception.getMessage();
+
+        log.error("Exception occurred in class = {}, method = {}, message = {}, exception class = {}",
+            className, methodName, exceptionMessage, exception.getClass().getCanonicalName());
+    }
 }
