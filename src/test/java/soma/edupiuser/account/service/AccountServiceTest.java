@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import soma.edupiuser.account.exception.MetaServerException;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.SignupRequest;
 import soma.edupiuser.account.models.SignupResponse;
@@ -21,6 +20,7 @@ import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
 import soma.edupiuser.web.auth.TokenProvider;
 import soma.edupiuser.web.client.MetaServerApiClient;
+import soma.edupiuser.web.exception.AccountException;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest {
@@ -75,7 +75,7 @@ public class AccountServiceTest {
         );
 
         Assertions.assertThatThrownBy(() -> accountService.login(accountLoginRequest))
-            .isInstanceOf(MetaServerException.class);
+            .isInstanceOf(AccountException.class);
     }
 
     @Test

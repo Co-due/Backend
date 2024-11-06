@@ -16,10 +16,11 @@ public enum ErrorEnum {
     RESPONSE_FORMAT_ERROR(HttpStatus.BAD_REQUEST, "AC-400006",
         "Invalid error response format."),
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "AC-400007", "Token not found."),
+    NOT_ACTIVATED_EXCEPTION(HttpStatus.BAD_REQUEST, "AC-400008", "Not Authenticated email user."),
+
 
     META_SERVER_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "AC-500001", "Meta server Exception"),
-
-    ;
+    NOT_MATCH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AC-500002", "No matching error found.");
 
     private final HttpStatus httpStatus;
     private final String code;
