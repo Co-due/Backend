@@ -1,0 +1,45 @@
+name: Pull Request build
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Copy Secret yml
+        env:
+          CREATE_SECRET: ${{secrets.EDUPI_USER_DEV_APPLICATION_YML}}
+          CREATE_SECRET_DIR: src/main/resources
+          CREATE_SECRET_DIR_FILE_NAME: application.yml
+        run: echo $CREATE_SECRET | base64 --decode > $CREATE_SECRET_DIR/$CREATE_SECRET_DIR_FILE_NAME
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Test with Gradle
+        run: ./gradlew test
+
+      - name: Cleanup Gradle Cache
+        if: ${{ always() }}
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+
