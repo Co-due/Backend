@@ -1,6 +1,7 @@
 package soma.edupiuser.web.models;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,13 @@ public class ErrorResponse {
         this.code = code;
         this.detail = detail;
         this.result = result;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", code);
+        map.put("detail", detail);
+        map.put("result", result);
+        return map;
     }
 }

@@ -69,7 +69,7 @@ public class AccountService {
             if (errorResponse.getCode().equals("DB-409001")) {
                 throw new DuplicatedEmailException(ErrorEnum.DUPLICATE_EMAIL);
             } else {
-                throw new MetaServerException(ErrorEnum.NOT_MATCH_ERROR);
+                throw new MetaServerException(ErrorEnum.NOT_MATCH_ERROR, errorResponse.toMap());
             }
         } catch (ResourceAccessException e) {
             throw new AccountException(ErrorEnum.RESOURCE_ACCESS_EXCEPTION);
