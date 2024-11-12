@@ -26,7 +26,7 @@ class SignupRequestTest {
         SignupRequest signupRequest = SignupRequest.builder()
             .email("rladbwls0000@gmail.com")
             .name("yujin")
-            .password("testest@")
+            .password("testest@123")
             .phoneNumber("010-1234-5678")
             .build();
 

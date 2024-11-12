@@ -24,7 +24,7 @@ public class SignupRequest {
         message = "비밀번호는 문자, 숫자, 특수문자 중 두 가지 이상을 포함해야 합니다."
     )
     @Pattern(
-        regexp = "(?!.*(.)\\1{2}).{8,}$",
+        regexp = "^(?!.*(.)\\1{2}).*$",
         message = "비밀번호는 동일한 문자가 세 번 이상 반복될 수 없습니다."
     )
     private String password;
