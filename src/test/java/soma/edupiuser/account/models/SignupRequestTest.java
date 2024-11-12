@@ -26,7 +26,7 @@ class SignupRequestTest {
         SignupRequest signupRequest = SignupRequest.builder()
             .email("rladbwls0000@gmail.com")
             .name("yujin")
-            .password("rladbwls000@")
+            .password("testest@123")
             .phoneNumber("010-1234-5678")
             .build();
 
@@ -41,7 +41,7 @@ class SignupRequestTest {
         SignupRequest signupRequest = SignupRequest.builder()
             .email("rladbwls0000")
             .name("yujin")
-            .password("rladbwls000@")
+            .password("testtset!")
             .build();
 
         Set<ConstraintViolation<SignupRequest>> exceptions = validator.validate(signupRequest);
@@ -72,7 +72,7 @@ class SignupRequestTest {
         SignupRequest signupRequest = SignupRequest.builder()
             .email("")
             .name("")
-            .password("12345")
+            .password("testtest111")
             .build();
 
         Set<ConstraintViolation<SignupRequest>> exceptions = validator.validate(signupRequest);
