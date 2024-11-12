@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({AccountException.class, DuplicatedEmailException.class})
     public ResponseEntity<ErrorResponse> handleAccountException(BaseException exception) {
-        log.debug("[{}] code={}, message={}", exception.getClass().getSimpleName(), exception.getErrorCode().getCode(),
+        log.info("[{}] code={}, message={}", exception.getClass().getSimpleName(), exception.getErrorCode().getCode(),
             exception.getMessage());
         ErrorEnum errorEnum = exception.getErrorCode();
 
@@ -29,10 +29,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MetaServerException.class)
-    public ResponseEntity<ErrorResponse> handleMetaExceptions(MetaServerException exception) {
-        log.error("[Meta Exception] code={}, message={}, detail message={}", exception.getErrorCode().getCode(),
+    public ResponseEntity<ErrorResponse> handleMetaExceptions(BaseException exception) {
+        log.error("[Meta Exception] code={}, message={}, result={}", exception.getErrorCode().getCode(),
             exception.getErrorCode().getDetail(),
-            exception.getMessage());
+            exception.getResult());
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestCookieException.class)
     public ResponseEntity<ErrorResponse> handleMissingCookieExceptions(MissingRequestCookieException exception) {
-        log.debug("[MissingRequestCookieException] code={}, message={}", exception.getStatusCode(),
+        log.info("[MissingRequestCookieException] code={}, message={}", exception.getStatusCode(),
             exception.getMessage());
 
         return ResponseEntity
