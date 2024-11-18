@@ -16,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import soma.edupiuser.account.models.AccountLoginRequest;
 import soma.edupiuser.account.models.EmailRequest;
-import soma.edupiuser.account.models.LogoutResponse;
 import soma.edupiuser.account.models.SignupRequest;
-import soma.edupiuser.account.models.SignupResponse;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.AccountService;
 import soma.edupiuser.account.service.EmailService;
+import soma.edupiuser.web.models.SuccessResponse;
 import soma.edupiuser.web.utils.CookieUtils;
 
 @Slf4j
@@ -34,54 +33,54 @@ public class AccountController implements AccountOpenApi {
     private final AccountService accountService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@Valid @RequestBody AccountLoginRequest accountLoginRequest,
+    public ResponseEntity<SuccessResponse> login(@Valid @RequestBody AccountLoginRequest accountLoginRequest,
         HttpServletResponse response) {
         String token = accountService.login(accountLoginRequest);
         CookieUtils.addCookie(response, "token", token, 60 * 60);
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .build();
+            .body(SuccessResponse.withDetail("Success login"));
     }
 
     @GetMapping("/login/info")
-    public ResponseEntity<TokenInfo> loginInfo(@CookieValue("token") String token) {
+    public ResponseEntity<SuccessResponse> loginInfo(@CookieValue("token") String token) {
         TokenInfo tokenInfo = accountService.findAccountInfo(token);
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(tokenInfo);
+            .body(SuccessResponse.withDetailAndResult("Success login info", tokenInfo));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> createAccount(@Valid @RequestBody SignupRequest signupRequest)
+    public ResponseEntity<SuccessResponse> createAccount(@Valid @RequestBody SignupRequest signupRequest)
         throws MessagingException {
         accountService.signup(signupRequest);
         emailService.sendEmail(signupRequest.getEmail());
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .build();
+            .body(SuccessResponse.withDetail("Success logout"));
     }
 
 
     // 이메일 인증
     @PostMapping("/activate")
-    public ResponseEntity<Void> activateAccount(@RequestBody EmailRequest emailRequest) {
+    public ResponseEntity<SuccessResponse> activateAccount(@RequestBody EmailRequest emailRequest) {
         emailService.activateAccount(emailRequest);
         log.info("success email activate : email={}", emailRequest.getEmail());
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .build();
+            .body(SuccessResponse.withDetail("Success activate email"));
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<SuccessResponse> logout(HttpServletRequest request, HttpServletResponse response) {
         CookieUtils.deleteCookie(request, response, "token");
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .build();
+            .body(SuccessResponse.withDetail("Success logout"));
     }
 }
