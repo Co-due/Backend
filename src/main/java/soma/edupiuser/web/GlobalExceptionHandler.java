@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
             exception.getMessage());
 
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
+            .status(HttpStatus.ACCEPTED)
             .body(new ErrorResponse(ErrorEnum.TOKEN_NOT_FOUND.getCode(), ErrorEnum.TOKEN_NOT_FOUND.getDetail()));
     }
 

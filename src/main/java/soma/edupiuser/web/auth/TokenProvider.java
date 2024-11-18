@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 import soma.edupiuser.account.models.TokenInfo;
 import soma.edupiuser.account.service.domain.Account;
 import soma.edupiuser.account.service.domain.AccountRole;
-import soma.edupiuser.web.exception.AccountException;
 import soma.edupiuser.web.exception.ErrorEnum;
+import soma.edupiuser.web.exception.TokenException;
 
 @Component
 public class TokenProvider {
@@ -64,7 +64,7 @@ public class TokenProvider {
 
     private Claims getClaims(String token) {
         if (token == null || token.isEmpty()) {
-            throw new AccountException(ErrorEnum.TOKEN_NOT_FOUND);
+            throw new TokenException(ErrorEnum.TOKEN_NOT_FOUND);
         }
 
         try {
@@ -76,7 +76,7 @@ public class TokenProvider {
 
     private void isTokenExpired(Claims claims) {
         if (claims.getExpiration().before(new Date())) {
-            throw new AccountException(ErrorEnum.TOKEN_EXPIRE);
+            throw new TokenException(ErrorEnum.TOKEN_EXPIRE);
         }
     }
 
